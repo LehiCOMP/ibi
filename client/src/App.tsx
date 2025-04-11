@@ -3,6 +3,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
 import { useEffect, useState } from "react";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/lib/protected-route";
 
 // Layouts
 import Header from "./components/layout/Header";
@@ -18,6 +20,7 @@ import StudyDetail from "./pages/StudyDetail";
 import BlogDetail from "./pages/BlogDetail";
 import ForumTopic from "./pages/ForumTopic";
 import NotFound from "./pages/not-found";
+import AuthPage from "./pages/auth-page";
 
 // Componente de transição para páginas
 const PageTransition = ({ children }: { children: React.ReactNode }) => {
@@ -71,14 +74,16 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex flex-col min-h-screen bg-gray-50">
-        <Header />
-        <main className="flex-grow">
-          <Router />
-        </main>
-        <Footer />
-      </div>
-      <Toaster />
+      <AuthProvider>
+        <div className="flex flex-col min-h-screen bg-gray-50">
+          <Header />
+          <main className="flex-grow">
+            <Router />
+          </main>
+          <Footer />
+        </div>
+        <Toaster />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

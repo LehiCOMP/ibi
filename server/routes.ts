@@ -133,7 +133,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.post("/blog-posts", requireAuth, async (req: Request, res: Response) => {
     try {
       const validated = validateRequest(insertBlogPostSchema, req.body);
-      const post = await storage.createBlogPost(validated);
+      
+      // Adicionar o ID do usuário autenticado como autor
+      const postData = {
+        ...validated,
+        authorId: req.user!.id
+      };
+      
+      const post = await storage.createBlogPost(postData);
       res.status(201).json(post);
     } catch (error: any) {
       res.status(400).json({ message: error.message || "Invalid blog post data" });
@@ -208,7 +215,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.post("/forum-topics", requireAuth, async (req: Request, res: Response) => {
     try {
       const validated = validateRequest(insertForumTopicSchema, req.body);
-      const topic = await storage.createForumTopic(validated);
+      
+      // Adicionar o ID do usuário autenticado como autor
+      const topicData = {
+        ...validated,
+        authorId: req.user!.id
+      };
+      
+      const topic = await storage.createForumTopic(topicData);
       
       // Get author information
       const author = await storage.getUser(topic.authorId);
@@ -237,7 +251,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Forum topic not found" });
       }
       
-      const reply = await storage.createForumReply(validated);
+      // Adicionar o ID do usuário autenticado como autor
+      const replyData = {
+        ...validated,
+        authorId: req.user!.id
+      };
+      
+      const reply = await storage.createForumReply(replyData);
       
       // Get author information
       const author = await storage.getUser(reply.authorId);
@@ -290,7 +310,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.post("/events", requireAuth, async (req: Request, res: Response) => {
     try {
       const validated = validateRequest(insertEventSchema, req.body);
-      const event = await storage.createEvent(validated);
+      
+      // Adicionar o ID do usuário autenticado como autor (se aplicável)
+      const eventData = {
+        ...validated
+      };
+      
+      const event = await storage.createEvent(eventData);
       res.status(201).json(event);
     } catch (error: any) {
       res.status(400).json({ message: error.message || "Invalid event data" });
