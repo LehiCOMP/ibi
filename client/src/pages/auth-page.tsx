@@ -78,6 +78,16 @@ export default function AuthPage() {
     try {
       const { confirmPassword, ...registerData } = data;
       console.log("Enviando dados de registro:", registerData);
+      
+      if (registerData.password.length < 6) {
+        toast({
+          title: "Erro de validação",
+          description: "A senha deve ter pelo menos 6 caracteres",
+          variant: "destructive",
+        });
+        return;
+      }
+
       await registerMutation.mutateAsync(registerData);
       toast({
         title: "Conta criada com sucesso!",
@@ -85,9 +95,10 @@ export default function AuthPage() {
       });
     } catch (error: any) {
       console.error("Erro no registro:", error);
+      const errorMessage = error?.message || "Erro ao tentar criar a conta";
       toast({
         title: "Erro ao criar conta",
-        description: error?.message || "Erro ao tentar criar a conta",
+        description: errorMessage,
         variant: "destructive",
       });
     }

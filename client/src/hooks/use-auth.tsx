@@ -51,19 +51,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const registerMutation = useMutation({
     mutationFn: async (credentials: InsertUser) => {
-      const { data, error } = await supabase.auth.signUp({
-        email: credentials.email,
-        password: credentials.password,
-        options: {
-          data: {
+      try {
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: credentials.email,
+          password: credentials.password
+        });
+        
+        if (authError) throw authError;
+
+        const { error: profileError } = await supabase
+          .from('users')
+          .insert({
+            id: authData.user?.id,
             username: credentials.username,
-            display_name: credentials.displayName || credentials.username
-          }
-        }
-      });
-      
-      if (error) throw error;
-      return data.user;
+            display_name: credentials.displayName || credentials.username,
+            email: credentials.email,
+            created_at: new Date().toISOString()
+          });
+
+        if (profileError) throw profileError;
+        
+        return authData.user;
+      } catch (error) {
+        console.error('Erro no registro:', error);
+        throw error;
+      }
     },
     onSuccess: (user: User) => {
       queryClient.setQueryData(["/api/user"], user);
