@@ -7,19 +7,13 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-heading text-xl font-semibold mb-4">Igreja Online</h3>
+            <h3 className="font-heading text-xl font-semibold mb-4">Igreja Batista Independente de Parnaíba</h3>
             <p className="text-neutral-light mb-4 text-sm">
-              Um espaço digital para fortalecer sua fé e conectar-se com nossa comunidade.
+              Pertence às Conveções das Igrejas Batistas Independentes
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-white hover:text-secondary transition">
-                <Facebook size={20} />
-              </a>
-              <a href="#" className="text-white hover:text-secondary transition">
+              <a href="https://www.instagram.com/igrejabatista.phb" target="_blank" rel="noopener noreferrer" className="text-white hover:text-secondary transition">
                 <Instagram size={20} />
-              </a>
-              <a href="#" className="text-white hover:text-secondary transition">
-                <Youtube size={20} />
               </a>
             </div>
           </div>
@@ -58,10 +52,11 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold mb-4">Horários</h3>
             <ul className="space-y-2 text-sm">
-              <li>Culto de Domingo: 9h e 18h</li>
-              <li>Estudo Bíblico: Quarta, 19h30</li>
-              <li>Culto de Jovens: Sábado, 19h</li>
-              <li>Escola Dominical: Domingo, 10h30</li>
+              <li>Domingo 18:00 - Culto De Celebração</li>
+              <li>Domingo 08:30 - Escola Bíblica</li>
+              <li>Terça 19:30 - Estudo Da Palavra</li>
+              <li>Quarta 19:00 - Reunião de Oração</li>
+              <li>Quinta 19:30 - Projeto na Congregação da Ilha Grande - PI</li>
             </ul>
           </div>
           
@@ -70,22 +65,18 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li className="flex items-center">
                 <MapPin className="h-4 w-4 mr-2" />
-                Rua da Igreja, 123 - Centro
-              </li>
-              <li className="flex items-center">
-                <Phone className="h-4 w-4 mr-2" />
-                (11) 5555-5555
+                Parnaíba - PI Rua Anhanguera, N° 3330, Bairro Frei Higino
               </li>
               <li className="flex items-center">
                 <Mail className="h-4 w-4 mr-2" />
-                contato@igrejaaonline.com.br
+                batistaindependente.phb@gmail.com
               </li>
             </ul>
           </div>
         </div>
         
         <div className="mt-8 pt-8 border-t border-primary text-sm text-center">
-          <p>&copy; {new Date().getFullYear()} Igreja Online. Todos os direitos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} Igreja Batista Independente de Parnaíba. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>

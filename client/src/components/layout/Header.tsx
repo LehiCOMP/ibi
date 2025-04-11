@@ -23,8 +23,8 @@ const Header = () => {
               <Users className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-heading font-semibold text-primary">Igreja Online</h1>
-              <p className="text-xs text-neutral-dark">Comunidade & Fé</p>
+              <h1 className="text-lg font-heading font-semibold text-primary">Igreja Batista Independente de Parnaíba</h1>
+              <p className="text-xs text-neutral-dark">Igreja unida é uma igreja que avança</p>
             </div>
           </Link>
           
