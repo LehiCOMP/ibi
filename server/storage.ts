@@ -22,6 +22,46 @@ import {
 } from '@shared/schema';
 
 export const storage = {
+  async getUserByUsername(username: string) {
+    try {
+      const result = await db.select().from(users).where(eq(users.username, username));
+      return result[0];
+    } catch (error) {
+      console.error('Erro ao buscar usuário por username:', error);
+      throw error;
+    }
+  },
+
+  async getUserByEmail(email: string) {
+    try {
+      const result = await db.select().from(users).where(eq(users.email, email));
+      return result[0];
+    } catch (error) {
+      console.error('Erro ao buscar usuário por email:', error);
+      throw error;
+    }
+  },
+
+  async createUser(userData: InsertUser) {
+    try {
+      const result = await db.insert(users).values(userData).returning();
+      return result[0];
+    } catch (error) {
+      console.error('Erro ao criar usuário:', error);
+      throw error;
+    }
+  },
+
+  async getUser(id: number) {
+    try {
+      const result = await db.select().from(users).where(eq(users.id, id));
+      return result[0];
+    } catch (error) {
+      console.error('Erro ao buscar usuário:', error);
+      throw error;
+    }
+  },
+
   async getBibleStudies() {
     try {
       return await db.select().from(bibleStudies).orderBy(bibleStudies.createdAt);
