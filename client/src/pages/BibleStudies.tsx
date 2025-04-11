@@ -19,6 +19,7 @@ import { apiRequest } from '@/lib/queryClient';
 
 const BibleStudies = () => {
   const { toast } = useToast();
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { data: studies, isLoading, refetch } = useQuery({
     queryKey: ['/api/bible-studies'],
   });
@@ -60,8 +61,22 @@ const BibleStudies = () => {
     },
   });
 
-  const onSubmit = (values) => {
-    mutation.mutate(values);
+  const onSubmit = async (values: any) => {
+    try {
+      await mutation.mutateAsync(values);
+      // Fechar o diálogo após submissão bem-sucedida
+      const dialog = document.querySelector('dialog');
+      if (dialog) {
+        dialog.close();
+      }
+    } catch (error) {
+      console.error('Erro ao criar estudo:', error);
+      toast({
+        title: "Erro ao criar estudo",
+        description: "Ocorreu um erro ao tentar criar o estudo. Tente novamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -69,7 +84,7 @@ const BibleStudies = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="font-heading text-3xl md:text-4xl font-bold text-primary">Estudos Bíblicos</h1>
         
-        <Dialog>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
