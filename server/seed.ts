@@ -30,11 +30,12 @@ async function seed() {
     console.log('Inserindo dados do usuário...');
     const { error: profileError } = await supabase
       .from('users')
-      .insert({
+      .upsert({
         id: adminId,
         username: 'admin',
         display_name: 'Administrador',
-        email: 'lehikayn@gmail.com'
+        email: 'lehikayn@gmail.com',
+        created_at: new Date().toISOString()
       });
 
     if (profileError) throw profileError;
