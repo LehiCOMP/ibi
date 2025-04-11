@@ -16,10 +16,6 @@ async function seed() {
   );
 
   try {
-    // Temporarily disable RLS
-    const { error: rlsError } = await supabase.rpc('disable_rls'); // Assumes a function 'disable_rls' exists in your Supabase DB
-    if (rlsError) throw new Error(`Erro ao desativar RLS: ${rlsError.message}`);
-
     console.log('Criando usuário admin...');
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: 'lehikayn@gmail.com',
@@ -43,11 +39,6 @@ async function seed() {
       });
 
     if (profileError) throw profileError;
-
-    // Re-enable RLS
-    const { error: reenableError } = await supabase.rpc('enable_rls'); // Assumes a function 'enable_rls' exists in your Supabase DB
-    if (reenableError) throw new Error(`Erro ao reativar RLS: ${reenableError.message}`);
-
 
     console.log('Seed concluído com sucesso!');
   } catch (error) {
