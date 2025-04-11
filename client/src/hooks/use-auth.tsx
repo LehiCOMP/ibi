@@ -51,29 +51,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const registerMutation = useMutation({
     mutationFn: async (credentials: InsertUser) => {
+      console.log('Iniciando processo de registro no Supabase...');
       try {
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email: credentials.email,
           password: credentials.password
         });
         
-        if (authError) throw authError;
+        console.log('Resposta do Supabase auth:', { authData, authError });
+        
+        if (authError) {
+          console.error('Erro na autenticação:', authError);
+          throw authError;
+        }
 
+        if (!authData.user?.id) {
+          throw new Error('Usuário não foi criado corretamente');
+        }
+
+        console.log('Criando perfil do usuário...');
         const { error: profileError } = await supabase
           .from('users')
           .insert({
-            id: authData.user?.id,
+            id: authData.user.id,
             username: credentials.username,
             display_name: credentials.displayName || credentials.username,
             email: credentials.email,
             created_at: new Date().toISOString()
           });
 
-        if (profileError) throw profileError;
+        if (profileError) {
+          console.error('Erro ao criar perfil:', profileError);
+          throw profileError;
+        }
         
         return authData.user;
       } catch (error) {
-        console.error('Erro no registro:', error);
+        console.error('Erro detalhado no registro:', error);
         throw error;
       }
     },
