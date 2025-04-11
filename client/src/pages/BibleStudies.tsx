@@ -34,48 +34,49 @@ const BibleStudies = () => {
       bibleVerse: '',
       bibleReference: '',
       category: '',
-      authorId: 1,
       published: true
     }
   });
 
   const mutation = useMutation({
     mutationFn: async (values) => {
-      const response = await apiRequest('POST', '/api/bible-studies', values);
+      const response = await fetch('/api/bible-studies', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Erro ao criar estudo');
+      }
+      
       return response.json();
-    },
-    onSuccess: () => {
-      form.reset();
-      setDialogOpen(false);
-      toast({
-        title: "Estudo criado com sucesso!",
-        description: "Seu estudo bíblico foi publicado.",
-      });
-      refetch();
-    },
-    onError: (error) => {
-      toast({
-        title: "Erro ao criar estudo",
-        description: error.message || "Ocorreu um erro ao criar o estudo. Tente novamente.",
-        variant: "destructive",
-      });
-    },
+    }
   });
 
   const onSubmit = async (values: any) => {
     try {
-      await mutation.mutateAsync({
+      const formData = {
         ...values,
-        authorId: "1", // Valor temporário para teste
         published: true
-      });
+      };
+      
+      console.log('Enviando dados:', formData);
+      
+      await mutation.mutateAsync(formData);
+      await refetch(); // Atualiza a lista após criar
       
       setDialogOpen(false);
+      form.reset();
+      
       toast({
         title: "Sucesso!",
         description: "Estudo bíblico publicado com sucesso.",
       });
-      
     } catch (error) {
       console.error('Erro ao criar estudo:', error);
       toast({
