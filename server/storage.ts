@@ -22,13 +22,18 @@ import {
 } from '@shared/schema';
 
 export const storage = {
-  async getUserByUsername(username: string) {
-    try {
-      const result = await db.select().from(users).where(eq(users.username, username));
-      return result[0];
-    } catch (error) {
-      console.error('Erro ao buscar usuário por username:', error);
-      throw error;
+  async getUserByUsername(username: string, retries = 3) {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const result = await db.select().from(users).where(eq(users.username, username));
+        return result[0];
+      } catch (error: any) {
+        console.error(`Tentativa ${i + 1}/${retries} falhou:`, error);
+        if (i === retries - 1 || error.code !== 'CONNECT_TIMEOUT') {
+          throw error;
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+      }
     }
   },
 

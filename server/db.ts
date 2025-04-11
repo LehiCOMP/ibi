@@ -26,10 +26,15 @@ export const supabase = createClient(
 let db: ReturnType<typeof drizzle>;
 
 try {
-  const pool = postgres(process.env.VITE_SUPABASE_URL, {
-    max: 5,
-    idle_timeout: 60,
-    connect_timeout: 120,
+  const connectionString = process.env.VITE_SUPABASE_URL;
+  // Usar connection pooling do Supabase
+  const poolUrl = connectionString.replace('.supabase.co', '-pooler.supabase.co');
+  
+  const pool = postgres(poolUrl, {
+    max: 10,
+    idle_timeout: 300,
+    connect_timeout: 300,
+    max_lifetime: 60 * 60, // 1 hora
     connection: {
       application_name: 'igreja-app'
     },
@@ -37,7 +42,7 @@ try {
       rejectUnauthorized: false
     },
     keepAlive: true,
-    max_lifetime: 60 * 30 // 30 minutos
+    keepAliveInitialDelayMillis: 10000
   });
   db = drizzle(pool, { schema });
   console.log("Conexão com banco de dados estabelecida com sucesso");
