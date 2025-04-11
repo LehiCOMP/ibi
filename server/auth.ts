@@ -62,6 +62,18 @@ export function setupAuth(app: Express) {
   app.post("/api/register", async (req, res) => {
     try {
       const userData = insertUserSchema.parse(req.body);
+      
+      // Verificar se usuário já existe
+      const existingUser = await storage.getUserByUsername(userData.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Nome de usuário já está em uso" });
+      }
+
+      const existingEmail = await storage.getUserByEmail(userData.email);
+      if (existingEmail) {
+        return res.status(400).json({ message: "Email já está em uso" });
+      }
+
       const hashedPassword = await bcrypt.hash(userData.password, 10);
 
       const newUser = await storage.createUser({
@@ -72,12 +84,16 @@ export function setupAuth(app: Express) {
       // Login automático após registro
       req.login(newUser, (err) => {
         if (err) {
+          console.error("Erro no login após registro:", err);
           return res.status(500).json({ message: "Erro ao fazer login após registro" });
         }
         return res.status(201).json(newUser);
       });
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      console.error("Erro no registro:", error);
+      res.status(400).json({ 
+        message: error.message || "Erro ao criar usuário. Tente novamente."
+      });
     }
   });
 
