@@ -7,7 +7,7 @@ import { insertUserSchema } from "@shared/schema";
 
 export function setupAuth(app: Express) {
   passport.initialize();
-  
+
   // Configurar serialização do usuário
   passport.serializeUser((user: any, done) => {
     done(null, user.id);
@@ -62,7 +62,7 @@ export function setupAuth(app: Express) {
   app.post("/api/register", async (req, res) => {
     try {
       const userData = insertUserSchema.parse(req.body);
-      
+
       // Verificar se usuário já existe
       const existingUser = await storage.getUserByUsername(userData.username);
       if (existingUser) {
@@ -83,28 +83,26 @@ export function setupAuth(app: Express) {
         });
 
         if (!newUser) {
-          throw new Error("Falha ao criar usuário no banco de dados");
+          console.error("Usuário não foi criado");
+          return res.status(500).json({ message: "Erro ao criar usuário" });
         }
 
         // Login automático após registro
         req.login(newUser, (err) => {
           if (err) {
-            console.error("Erro no login após registro:", err);
-            return res.status(500).json({ message: "Erro ao fazer login após registro" });
+            console.error("Erro detalhado no login após registro:", err);
+            return res.status(500).json({ message: "Erro ao fazer login após registro", details: err.message });
           }
           return res.status(201).json(newUser);
         });
-      } catch (dbError: any) {
-        console.error("Erro no banco de dados:", dbError);
-        return res.status(500).json({ 
-          message: "Erro interno ao criar usuário. Por favor, tente novamente."
+      } catch (error: any) {
+        console.error("Erro detalhado no registro:", error);
+        res.status(400).json({ message: error.message || "Erro desconhecido no registro",
         });
       }
     } catch (error: any) {
-      console.error("Erro no registro:", error);
-      res.status(400).json({ 
-        message: error.message || "Erro ao criar usuário. Tente novamente."
-      });
+      console.error("Erro detalhado no registro:", error);
+      res.status(400).json({ message: error.message || "Erro ao criar usuário. Tente novamente." });
     }
   });
 
