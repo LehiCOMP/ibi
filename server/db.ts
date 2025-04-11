@@ -29,17 +29,23 @@ try {
   const connectionString = process.env.VITE_SUPABASE_URL;
   
   const pool = postgres(connectionString, {
-    max: 5,
-    idle_timeout: 20,
-    connect_timeout: 10,
+    max: 3,
+    idle_timeout: 30,
+    connect_timeout: 30,
+    max_lifetime: 60 * 30, // 30 minutos
     connection: {
       application_name: 'igreja-app',
       keepalive: true,
-      keepaliveInitialDelayMillis: 1000
+      keepaliveInitialDelayMillis: 5000,
+      statement_timeout: 60000,
+      query_timeout: 60000
     },
-    connection: {
-      application_name: 'igreja-app'
+    ssl: {
+      rejectUnauthorized: false
     },
+    debug: (connection_id, str, args) => {
+      console.log(`[DB ${connection_id}] ${str}`, args)
+    }
     ssl: {
       rejectUnauthorized: false
     },

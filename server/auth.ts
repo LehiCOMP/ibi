@@ -59,9 +59,10 @@ export function setupAuth(app: Express) {
 
   // Rota de registro
   app.post("/api/register", async (req, res) => {
-    try {
-      const userData = insertUserSchema.parse(req.body);
+    console.log("Iniciando registro...");
+    const userData = insertUserSchema.parse(req.body);
 
+    try {
       // Verificar se usuário já existe
       const existingUser = await storage.getUserByUsername(userData.username);
       if (existingUser) {
