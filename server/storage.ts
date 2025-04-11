@@ -578,7 +578,14 @@ export const storage = {
   async getBlogPost(id: string) {
     const { data, error } = await supabase
       .from('blog_posts')
-      .select()
+      .select(`
+        *,
+        author:author_id (
+          id,
+          display_name,
+          avatar_url
+        )
+      `)
       .eq('id', id)
       .single();
     if (error) throw error;
@@ -604,10 +611,17 @@ export const storage = {
     return data;
   },
 
-  async getForumTopic(id: number) {
+  async getForumTopic(id: string) {
     const { data, error } = await supabase
       .from('forum_topics')
-      .select()
+      .select(`
+        *,
+        author:author_id (
+          id,
+          display_name,
+          avatar_url
+        )
+      `)
       .eq('id', id)
       .single();
     if (error) throw error;
