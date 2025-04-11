@@ -65,6 +65,7 @@ function Router() {
         <Route path="/forum" component={Forum} />
         <Route path="/forum/:id" component={ForumTopic} />
         <Route path="/eventos" component={Events} />
+        <Route path="/auth" component={AuthPage} />
         <Route component={NotFound} />
       </Switch>
     </PageTransition>
