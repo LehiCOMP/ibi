@@ -13,23 +13,34 @@ export function setupAuth(app: Express) {
 
   // Rota de registro
   app.post("/api/register", async (req, res) => {
-    const { email, password, username } = req.body;
-
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          username
+    const { email, password, username, displayName } = req.body;
+    
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username,
+            displayName
+          }
         }
+      });
+
+      if (error) {
+        console.error("Erro no registro Supabase:", error);
+        return res.status(400).json({ message: error.message });
       }
-    });
 
-    if (error) {
-      return res.status(400).json({ message: error.message });
+      if (!data.user) {
+        return res.status(400).json({ message: "Erro ao criar usuário" });
+      }
+
+      res.status(201).json(data);
+    } catch (err) {
+      console.error("Erro no registro:", err);
+      res.status(500).json({ message: "Erro interno no servidor" });
     }
-
-    res.status(201).json(data);
   });
 
   // Rota de login
