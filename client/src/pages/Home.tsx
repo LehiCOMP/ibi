@@ -41,8 +41,8 @@ const Home = () => {
       {/* Hero Banner */}
       <section className="bg-primary text-white py-12 md:py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-4">Bem-vindo à nossa comunidade online</h1>
-          <p className="text-lg mb-8 max-w-2xl mx-auto">Um espaço para fortalecer sua fé, compartilhar conhecimento e construir relacionamentos.</p>
+          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-4">Igreja Batista Independente de Parnaíba</h1>
+          <p className="text-lg mb-8 max-w-2xl mx-auto">Igreja unida é uma igreja que avança. Junte-se a nós para crescer na fé e na comunhão.</p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link href="/estudos" className="bg-secondary hover:bg-secondary-dark text-neutral-darkest px-6 py-3 rounded-md font-medium transition">
               Explorar Estudos Bíblicos
@@ -181,6 +181,15 @@ const Home = () => {
           </div>
         </section>
 
+        {/* Versículo Bíblico em Destaque */}
+        <section className="mb-12 py-10 md:py-16 rounded-lg bg-gradient-to-r from-primary to-primary-dark">
+          <div className="container mx-auto px-4 text-center">
+            <BibleVerse reference="Filipenses 4:13" className="text-white text-xl md:text-2xl mb-4 max-w-3xl mx-auto font-heading">
+              "Tudo posso naquele que me fortalece."
+            </BibleVerse>
+          </div>
+        </section>
+        
         {/* Call to Action */}
         <section className="bg-secondary py-10 md:py-16 mb-12 rounded-lg">
           <div className="container mx-auto px-4 text-center">
