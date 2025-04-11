@@ -13,7 +13,7 @@ const Footer = () => {
           }}
         ></div>
       </div>
-      
+
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <div className="flex items-center mb-6 md:mb-0">
@@ -29,7 +29,7 @@ const Footer = () => {
               <p className="text-sm text-blue-200">Parnaíba - Piauí</p>
             </div>
           </div>
-          
+
           <div className="flex space-x-2">
             <a 
               href="https://www.instagram.com/igrejabatista.phb" 
@@ -42,11 +42,11 @@ const Footer = () => {
             </a>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 py-8 border-t border-b border-white/10">
           <div className="slide-in-up" style={{ animationDelay: '0.1s' }}>
-            <h3 className="font-heading text-lg font-semibold mb-4 text-blue-100">Sobre Nós</h3>
-            <p className="text-blue-200 mb-4 text-sm">
+            <h3 className="font-heading text-lg font-semibold mb-4 text-white">Sobre Nós</h3>
+            <p className="text-white mb-4 text-sm">
               Nossa missão é levar o evangelho de Cristo, fortalecer os laços de comunhão e ajudar cada pessoa a crescer na fé.
             </p>
             <Link href="/" className="inline-flex items-center text-secondary hover:text-yellow-300 transition-colors">
@@ -54,9 +54,9 @@ const Footer = () => {
               <ChevronRight className="h-4 w-4 ml-1" />
             </Link>
           </div>
-          
+
           <div className="slide-in-up" style={{ animationDelay: '0.2s' }}>
-            <h3 className="font-heading text-lg font-semibold mb-4 text-blue-100">Navegação</h3>
+            <h3 className="font-heading text-lg font-semibold mb-4 text-white">Navegação</h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <Link href="/estudos" className="inline-flex items-center hover:text-secondary transition-colors group">
@@ -84,10 +84,10 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          
+
           <div className="slide-in-up" style={{ animationDelay: '0.3s' }}>
-            <h3 className="font-heading text-lg font-semibold mb-4 text-blue-100">Horários</h3>
-            <ul className="space-y-3 text-sm text-blue-200">
+            <h3 className="font-heading text-lg font-semibold mb-4 text-white">Horários</h3>
+            <ul className="space-y-3 text-sm text-white">
               <li className="flex items-start">
                 <span className="font-semibold min-w-[100px]">Domingo 18:00</span>
                 <span>Culto de Celebração</span>
@@ -110,10 +110,10 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          
+
           <div className="slide-in-up" style={{ animationDelay: '0.4s' }}>
-            <h3 className="font-heading text-lg font-semibold mb-4 text-blue-100">Contato</h3>
-            <ul className="space-y-3 text-sm text-blue-200">
+            <h3 className="font-heading text-lg font-semibold mb-4 text-white">Contato</h3>
+            <ul className="space-y-3 text-sm text-white">
               <li className="flex items-start">
                 <MapPin className="h-4 w-4 mr-2 mt-1 text-secondary" />
                 <span>Parnaíba - PI<br />Rua Anhanguera, N° 3330<br />Bairro Frei Higino</span>
@@ -133,8 +133,8 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-        
-        <div className="mt-8 text-sm text-center text-blue-200">
+
+        <div className="mt-8 text-sm text-center text-white">
           <p className="flex items-center justify-center">
             &copy; {new Date().getFullYear()} Igreja Batista Independente de Parnaíba. Desenvolvido com <Heart className="h-3 w-3 mx-1 text-red-400" /> para a glória de Deus.
           </p>
