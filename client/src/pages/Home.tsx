@@ -83,7 +83,7 @@ const Home = () => {
               </div>
               <div className="p-6">
                 <h3 className="font-heading text-xl font-semibold mb-2 text-primary">Estudos Bíblicos</h3>
-                <p className="text-neutral-dark mb-4">Aprofunde seu conhecimento com nossos estudos semanais e recursos.</p>
+                <p className="text-neutral-900 mb-4">Aprofunde seu conhecimento com nossos estudos semanais e recursos.</p>
                 <Link href="/estudos" className="text-primary hover:text-primary-dark font-medium inline-flex items-center group">
                   Ver estudos
                   <ChevronRight className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" />
@@ -100,7 +100,7 @@ const Home = () => {
               </div>
               <div className="p-6">
                 <h3 className="font-heading text-xl font-semibold mb-2 text-primary">Fórum de Discussão</h3>
-                <p className="text-neutral-dark mb-4">Participe de conversas enriquecedoras com nossa comunidade.</p>
+                <p className="text-neutral-900 mb-4">Participe de conversas enriquecedoras com nossa comunidade.</p>
                 <Link href="/forum" className="text-primary hover:text-primary-dark font-medium inline-flex items-center group">
                   Participar agora
                   <ChevronRight className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" />
@@ -117,7 +117,7 @@ const Home = () => {
               </div>
               <div className="p-6">
                 <h3 className="font-heading text-xl font-semibold mb-2 text-primary">Eventos</h3>
-                <p className="text-neutral-dark mb-4">Fique por dentro dos próximos eventos e atividades da igreja.</p>
+                <p className="text-neutral-900 mb-4">Fique por dentro dos próximos eventos e atividades da igreja.</p>
                 <Link href="/eventos" className="text-primary hover:text-primary-dark font-medium inline-flex items-center group">
                   Ver calendário
                   <ChevronRight className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" />
@@ -178,7 +178,7 @@ const Home = () => {
                         "{study.bibleVerse}"
                       </BibleVerse>
                     )}
-                    <p className="text-neutral-dark mb-4 text-sm line-clamp-3">{study.summary}</p>
+                    <p className="text-neutral-900 mb-4 text-sm line-clamp-3">{study.summary}</p>
                     <div className="flex justify-between items-center">
                       <Link 
                         href={`/estudos/${study.id}`} 
@@ -242,7 +242,7 @@ const Home = () => {
               <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mb-4 slide-in-up">
                 Faça parte da nossa comunidade
               </h2>
-              <p className="text-neutral-dark mb-8 max-w-2xl mx-auto">
+              <p className="text-neutral-900 mb-8 max-w-2xl mx-auto">
                 Junte-se a nós em nossos cultos presenciais ou participe online. 
                 Estamos ansiosos para conhecê-lo e caminhar juntos na fé.
               </p>
