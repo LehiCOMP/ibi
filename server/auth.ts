@@ -114,8 +114,25 @@ export function setupAuth(app: Express) {
   });
 
   // Rota de login
-  app.post("/api/login", passport.authenticate("local"), (req, res) => {
-    res.json(req.user);
+  app.post("/api/login", (req, res, next) => {
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        console.error("Erro no login:", err);
+        return res.status(500).json({ message: "Erro interno no servidor" });
+      }
+      
+      if (!user) {
+        return res.status(401).json({ message: info.message || "Credenciais inválidas" });
+      }
+      
+      req.login(user, (loginErr) => {
+        if (loginErr) {
+          console.error("Erro no login após autenticação:", loginErr);
+          return res.status(500).json({ message: "Erro ao iniciar sessão" });
+        }
+        return res.json(user);
+      });
+    })(req, res, next);
   });
 
   // Rota de logout
