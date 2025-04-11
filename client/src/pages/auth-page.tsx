@@ -22,7 +22,7 @@ import { Loader2 } from "lucide-react";
 
 // Estendendo o schema para validação adicional
 const loginSchema = z.object({
-  username: z.string().min(3, "O usuário deve ter pelo menos 3 caracteres"),
+  email: z.string().email("Email inválido"),
   password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
 });
 
@@ -142,15 +142,16 @@ export default function AuthPage() {
                 <form onSubmit={loginForm.handleSubmit(onLoginSubmit)}>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="login-username">Usuário</Label>
+                      <Label htmlFor="login-email">Email</Label>
                       <Input
-                        id="login-username"
-                        {...loginForm.register("username")}
-                        placeholder="Seu nome de usuário"
+                        id="login-email"
+                        type="email"
+                        {...loginForm.register("email")}
+                        placeholder="Seu email"
                       />
-                      {loginForm.formState.errors.username && (
+                      {loginForm.formState.errors.email && (
                         <p className="text-sm text-red-500">
-                          {loginForm.formState.errors.username.message}
+                          {loginForm.formState.errors.email.message}
                         </p>
                       )}
                     </div>
