@@ -1,18 +1,203 @@
+
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'wouter';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import BibleVerse from '../components/ui/bible-verse';
-import { Share2, Bookmark } from 'lucide-react';
+import { Share2, Bookmark, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { insertBibleStudySchema } from '@shared/schema';
+import { useToast } from '@/hooks/use-toast';
+import { useMutation } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
 
 const BibleStudies = () => {
-  const { data: studies, isLoading } = useQuery({
+  const { toast } = useToast();
+  const { data: studies, isLoading, refetch } = useQuery({
     queryKey: ['/api/bible-studies'],
   });
 
+  const form = useForm({
+    resolver: zodResolver(insertBibleStudySchema),
+    defaultValues: {
+      title: '',
+      content: '',
+      summary: '',
+      imageUrl: '',
+      bibleVerse: '',
+      bibleReference: '',
+      category: '',
+      authorId: 1,
+      published: true
+    }
+  });
+
+  const mutation = useMutation({
+    mutationFn: async (values) => {
+      const response = await apiRequest('POST', '/api/bible-studies', values);
+      return response.json();
+    },
+    onSuccess: () => {
+      form.reset();
+      toast({
+        title: "Estudo criado com sucesso!",
+        description: "Seu estudo bíblico foi publicado.",
+      });
+      refetch();
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao criar estudo",
+        description: error.message || "Ocorreu um erro ao criar o estudo. Tente novamente.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const onSubmit = (values) => {
+    mutation.mutate(values);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="font-heading text-3xl md:text-4xl font-bold text-primary mb-6">Estudos Bíblicos</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="font-heading text-3xl md:text-4xl font-bold text-primary">Estudos Bíblicos</h1>
+        
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Novo Estudo
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Criar Novo Estudo Bíblico</DialogTitle>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Título</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Digite o título do estudo" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>URL da Imagem</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Cole o link da imagem" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="bibleVerse"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Versículo</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Digite o versículo" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="bibleReference"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Referência</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Ex: João 3:16" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="summary"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Resumo</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Digite um breve resumo do estudo"
+                          className="min-h-[80px]" 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Conteúdo</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Digite o conteúdo completo do estudo. Use links e formatação markdown se desejar."
+                          className="min-h-[200px]" 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Categoria</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ex: Novo Testamento, Doutrinas, etc" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button type="submit" className="w-full">
+                  Publicar Estudo
+                </Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+      </div>
       
       <div className="mb-8">
         <p className="text-lg text-neutral-dark max-w-3xl">
