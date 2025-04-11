@@ -7,12 +7,19 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Configurar session antes do passport
 app.use(session({
   secret: 'sua-chave-secreta',
   resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false } // Em produção, defina como true se usar HTTPS
+  saveUninitialized: true,
+  cookie: { 
+    secure: false,
+    maxAge: 24 * 60 * 60 * 1000 // 24 horas
+  }
 }));
+
+// Inicializar passport após session
+setupAuth(app);
 
 app.use((req, res, next) => {
   const start = Date.now();

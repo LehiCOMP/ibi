@@ -6,6 +6,22 @@ import { storage } from "./storage";
 import { insertUserSchema } from "@shared/schema";
 
 export function setupAuth(app: Express) {
+  passport.initialize();
+  
+  // Configurar serialização do usuário
+  passport.serializeUser((user: any, done) => {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(async (id: number, done) => {
+    try {
+      const user = await storage.getUser(id);
+      done(null, user);
+    } catch (error) {
+      done(error);
+    }
+  });
+
   app.use(passport.initialize());
   app.use(passport.session());
 
