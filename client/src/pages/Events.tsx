@@ -44,11 +44,63 @@ const Events = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="font-heading text-3xl md:text-4xl font-bold text-primary mb-6">Eventos</h1>
 
-      <div className="mb-8">
+      <div className="mb-8 flex justify-between items-start">
         <p className="text-lg text-neutral-dark max-w-3xl">
           Confira nossos próximos eventos e participe das atividades da igreja.
           Encontros, cultos especiais, momentos de comunhão e muito mais.
         </p>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Novo Evento
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Criar Novo Evento</DialogTitle>
+            </DialogHeader>
+            <form className="space-y-4" onSubmit={(e) => {
+              e.preventDefault();
+              // TODO: Implementar criação de evento
+            }}>
+              <div className="space-y-2">
+                <Label htmlFor="title">Título</Label>
+                <Input id="title" placeholder="Nome do evento" />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="startTime">Início</Label>
+                  <Input id="startTime" type="datetime-local" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="endTime">Término</Label>
+                  <Input id="endTime" type="datetime-local" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="location">Local</Label>
+                <Input id="location" placeholder="Onde será realizado" />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="description">Descrição</Label>
+                <Textarea id="description" placeholder="Detalhes do evento" />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="category">Categoria</Label>
+                <Input id="category" placeholder="Ex: Culto, Estudo, Encontro" />
+              </div>
+
+              <Button type="submit" className="w-full">
+                Criar Evento
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

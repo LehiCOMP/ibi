@@ -118,8 +118,8 @@ const Home = () => {
               <div className="p-6">
                 <h3 className="font-heading text-xl font-semibold mb-2 text-primary">Eventos</h3>
                 <p className="text-neutral-900 mb-4">Fique por dentro dos próximos eventos e atividades da igreja.</p>
-                <Link href="/eventos" className="text-primary hover:text-primary-dark font-medium inline-flex items-center group">
-                  Ver calendário
+                <Link href="/eventos" className="text-primary hover:text-primary-dark font-medium inline-flex items-center group bg-primary/10 px-3 py-1 rounded">
+                  Ver próximos eventos
                   <ChevronRight className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </div>
