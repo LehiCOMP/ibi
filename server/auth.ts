@@ -24,7 +24,8 @@ export function setupAuth(app: Express) {
             username,
             displayName
           },
-          emailRedirectTo: undefined
+          emailRedirectTo: undefined,
+          emailConfirm: false
         }
       });
 
