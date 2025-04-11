@@ -17,31 +17,21 @@ async function seed() {
 
   try {
     console.log('Criando usuário admin...');
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+
+    const { data: user, error: signUpError } = await supabase.auth.signUp({
       email: 'lehikayn@gmail.com',
       password: 'adminpass123',
+      options: {
+        data: {
+          username: 'admin',
+          display_name: 'Administrador'
+        }
+      }
     });
 
-    if (authError) throw authError;
+    if (signUpError) throw signUpError;
 
-    const adminId = authData.user?.id;
-    if (!adminId) throw new Error('Falha ao criar usuário admin');
-
-    console.log('Inserindo dados do usuário...');
-    const { error: profileError } = await supabase
-      .from('users')
-      .upsert({
-        id: adminId,
-        username: 'admin',
-        password: 'adminpass123',
-        display_name: 'Administrador',
-        email: 'lehikayn@gmail.com',
-        created_at: new Date().toISOString()
-      });
-
-    if (profileError) throw profileError;
-
-    console.log('Seed concluído com sucesso!');
+    console.log("Seed concluído com sucesso!");
   } catch (error) {
     console.error('Erro durante o seed:', error);
     throw error;
