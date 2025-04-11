@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
@@ -32,7 +33,7 @@ try {
     max: 3,
     idle_timeout: 30,
     connect_timeout: 30,
-    max_lifetime: 60 * 30, // 30 minutos
+    max_lifetime: 60 * 30,
     connection: {
       application_name: 'igreja-app',
       keepalive: true,
@@ -42,16 +43,9 @@ try {
     },
     ssl: {
       rejectUnauthorized: false
-    },
-    debug: (connection_id, str, args) => {
-      console.log(`[DB ${connection_id}] ${str}`, args)
     }
-    ssl: {
-      rejectUnauthorized: false
-    },
-    keepAlive: true,
-    keepAliveInitialDelayMillis: 10000
   });
+
   db = drizzle(pool, { schema });
   console.log("Conexão com banco de dados estabelecida com sucesso");
 } catch (error) {
@@ -59,4 +53,4 @@ try {
   throw error;
 }
 
-export { db, pool };
+export { db };
