@@ -542,7 +542,14 @@ export const storage = {
   async getBibleStudy(id: string) {
     const { data, error } = await supabase
       .from('bible_studies')
-      .select()
+      .select(`
+        *,
+        author:author_id (
+          id,
+          display_name,
+          avatar_url
+        )
+      `)
       .eq('id', id)
       .single();
     if (error) throw error;
@@ -578,9 +585,14 @@ export const storage = {
     return data;
   },
 
-  async createBlogPost(post: typeof blogPosts.$inferInsert) {
-    const result = await db.insert(blogPosts).values(post).returning();
-    return result[0];
+  async createBlogPost(post: InsertBlogPost) {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .insert(post)
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
   },
 
   async getForumTopics() {
