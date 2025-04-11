@@ -3,6 +3,11 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from "@shared/schema";
 
+console.log('Variáveis disponíveis:', {
+  VITE_SUPABASE_URL: process.env.VITE_SUPABASE_URL,
+  VITE_SUPABASE_KEY: process.env.VITE_SUPABASE_KEY
+});
+
 if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_KEY) {
   throw new Error('As variáveis de ambiente VITE_SUPABASE_URL e VITE_SUPABASE_KEY são necessárias');
 }
