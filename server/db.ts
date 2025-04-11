@@ -22,15 +22,17 @@ let db: ReturnType<typeof drizzle>;
 
 try {
   const pool = postgres(process.env.VITE_SUPABASE_URL, {
-    max: 3,
-    idle_timeout: 30,
-    connect_timeout: 60,
+    max: 5,
+    idle_timeout: 60,
+    connect_timeout: 120,
     connection: {
       application_name: 'igreja-app'
     },
     ssl: {
       rejectUnauthorized: false
-    }
+    },
+    keepAlive: true,
+    max_lifetime: 60 * 30 // 30 minutos
   });
   db = drizzle(pool, { schema });
   console.log("Conexão com banco de dados estabelecida com sucesso");
