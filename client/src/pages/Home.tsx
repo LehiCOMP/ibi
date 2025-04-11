@@ -10,29 +10,29 @@ const Home = () => {
   const { data: studies, isLoading: studiesLoading } = useQuery({
     queryKey: ['/api/bible-studies'],
   });
-  
+
   const { data: blogPosts, isLoading: blogLoading } = useQuery({
     queryKey: ['/api/blog-posts'],
   });
-  
+
   const { data: topics, isLoading: topicsLoading } = useQuery({
     queryKey: ['/api/forum-topics'],
   });
-  
+
   const { data: events, isLoading: eventsLoading } = useQuery({
     queryKey: ['/api/events'],
   });
-  
+
   // Get the three most recent Bible studies
   const recentStudies = studies?.slice(0, 3);
-  
+
   // Get featured blog post and recent posts
   const featuredPost = blogPosts?.find(post => post.featured);
   const recentPosts = blogPosts?.filter(post => !post.featured).slice(0, 3);
-  
+
   // Get the three most recent forum topics
   const recentTopics = topics?.slice(0, 3);
-  
+
   // Get the three upcoming events
   const upcomingEvents = events?.slice(0, 3);
 
@@ -152,17 +152,11 @@ const Home = () => {
               recentStudies?.map((study) => (
                 <div key={study.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 card-hover">
                   <div className="relative h-48 bg-gradient-to-br from-neutral-light to-white overflow-hidden group">
-                    {study.imageUrl ? (
-                      <img 
-                        src={study.imageUrl} 
-                        alt={study.title} 
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-white">
-                        <Book className="h-16 w-16 text-primary/30" />
-                      </div>
-                    )}
+                    <img 
+                      src={study.imageUrl || "https://images.unsplash.com/photo-1504052434569-70ad5dc57b25?q=80&w=2070&auto=format&fit=crop"} 
+                      alt={study.title} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
                     {study.category && (
                       <div className="absolute top-0 right-0 m-3 px-2 py-1 bg-secondary text-xs font-medium text-neutral-darkest rounded shadow-sm">
                         {study.category}
@@ -236,7 +230,7 @@ const Home = () => {
             </div>
           </div>
         </section>
-        
+
         {/* Call to Action */}
         <section className="mb-12 rounded-lg bg-white shadow-xl overflow-hidden relative">
           <div className="absolute top-0 left-0 w-full h-16 bg-secondary"></div>
@@ -249,7 +243,7 @@ const Home = () => {
                 Junte-se a nós em nossos cultos presenciais ou participe online. 
                 Estamos ansiosos para conhecê-lo e caminhar juntos na fé.
               </p>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div className="bg-blue-50 p-6 rounded-lg hover-scale">
                   <h3 className="font-heading font-semibold text-lg mb-2 text-primary">Horários de Culto</h3>
@@ -261,7 +255,7 @@ const Home = () => {
                     <li><strong>Quinta 19:30</strong> - Projeto Congregação</li>
                   </ul>
                 </div>
-                
+
                 <div className="bg-blue-50 p-6 rounded-lg hover-scale">
                   <h3 className="font-heading font-semibold text-lg mb-2 text-primary">Localização e Contato</h3>
                   <p className="text-sm text-left mb-2">
@@ -275,7 +269,7 @@ const Home = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link 
                   href="/eventos" 

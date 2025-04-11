@@ -198,7 +198,7 @@ export class MemStorage implements IStorage {
       title: "Fortalecendo famílias na era digital: desafios e oportunidades",
       content: "Como podemos usar a tecnologia para construir laços familiares mais fortes enquanto enfrentamos os desafios do mundo digital. Em um mundo cada vez mais conectado, as famílias enfrentam desafios únicos na criação de filhos e na manutenção de relacionamentos saudáveis. Este artigo explora estratégias práticas para usar a tecnologia como aliada na construção de famílias mais fortes, estabelecendo limites saudáveis, e aproveitando as oportunidades digitais para o crescimento espiritual conjunto.",
       summary: "Como podemos usar a tecnologia para construir laços familiares mais fortes enquanto enfrentamos os desafios do mundo digital.",
-      imageUrl: "https://images.unsplash.com/photo-1523803326055-13445e2a33e0?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
+      imageUrl: "https://images.unsplash.com/photo-1529070538774-1843cb3265df?q=80&w=2070&auto=format&fit=crop",
       authorId: mariaUser.id,
       readTime: 8,
       featured: true,

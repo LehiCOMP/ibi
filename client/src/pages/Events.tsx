@@ -11,29 +11,29 @@ const Events = () => {
   const { data: events, isLoading } = useQuery({
     queryKey: ['/api/events'],
   });
-  
+
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
-  
+
   // Calculate current month for calendar
   const currentMonth = new Date();
-  
+
   // Format events for calendar
   const calendarEvents = events?.map(event => ({
     date: new Date(event.startTime),
     category: event.category || 'default'
   }));
-  
+
   // Helper function to format date from ISO string
   const formatEventDate = (dateString: string) => {
     const date = parseISO(dateString);
     return format(date, 'dd', { locale: ptBR });
   };
-  
+
   const formatEventMonth = (dateString: string) => {
     const date = parseISO(dateString);
     return format(date, 'MMM', { locale: ptBR }).toUpperCase();
   };
-  
+
   const formatEventTime = (startString: string, endString: string) => {
     const start = parseISO(startString);
     const end = parseISO(endString);
@@ -43,14 +43,14 @@ const Events = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="font-heading text-3xl md:text-4xl font-bold text-primary mb-6">Eventos</h1>
-      
+
       <div className="mb-8">
         <p className="text-lg text-neutral-dark max-w-3xl">
           Confira nossos próximos eventos e participe das atividades da igreja.
           Encontros, cultos especiais, momentos de comunhão e muito mais.
         </p>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -71,7 +71,7 @@ const Events = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="divide-y divide-neutral-light">
               {isLoading ? (
                 Array(3).fill(0).map((_, index) => (
@@ -106,7 +106,7 @@ const Events = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="sm:w-5/6 sm:pl-4">
                     <div className="flex items-start justify-between">
                       <div>
@@ -130,6 +130,9 @@ const Events = () => {
                       </div>
                     </div>
                   </div>
+                  <div className="sm:w-1/6 mt-4 sm:mt-0 sm:ml-4"> {/* Added image container */}
+                    <img src="https://via.placeholder.com/150" alt={`Image for ${event.title}`} className="w-full h-auto rounded-lg object-cover" />
+                  </div>
                 </div>
               ))}
             </div>
@@ -143,7 +146,7 @@ const Events = () => {
                 Calendário de {format(currentMonth, 'MMMM', { locale: ptBR })}
               </h3>
             </div>
-            
+
             <div className="p-4">
               {isLoading ? (
                 <Skeleton className="h-80 w-full" />
@@ -154,7 +157,7 @@ const Events = () => {
                 />
               )}
             </div>
-            
+
             <div className="p-4 bg-neutral-lightest">
               <button className="block w-full text-center bg-primary hover:bg-primary-dark text-white py-2 rounded-md font-medium transition">
                 Ver Mês Completo

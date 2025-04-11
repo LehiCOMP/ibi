@@ -16,7 +16,7 @@ const Blog = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="font-heading text-3xl md:text-4xl font-bold text-primary mb-6">Blog</h1>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Featured Blog Post */}
         {isLoading ? (
@@ -43,13 +43,11 @@ const Blog = () => {
         ) : featuredPost ? (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="relative h-64 bg-neutral-light">
-              {featuredPost.imageUrl && (
                 <img 
-                  src={featuredPost.imageUrl} 
+                  src={featuredPost.imageUrl || "https://images.unsplash.com/photo-1560184611-ff3e53f00e8f?q=80&w=2070&auto=format&fit=crop"} 
                   alt={featuredPost.title} 
                   className="w-full h-full object-cover"
                 />
-              )}
               <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/70 to-transparent">
                 <span className="text-white text-xs px-2 py-1 bg-accent rounded">Destaque</span>
               </div>
