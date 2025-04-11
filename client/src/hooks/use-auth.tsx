@@ -63,11 +63,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     mutationFn: async (credentials: InsertUser) => {
       console.log("Iniciando mutação de registro com:", credentials);
       const res = await apiRequest("POST", "/api/register", credentials);
+      const data = await res.json();
+      
       if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Erro ao registrar usuário");
+        throw new Error(data.message || "Erro ao registrar usuário");
       }
-      return await res.json();
+      
+      if (!data.user) {
+        throw new Error("Resposta inválida do servidor");
+      }
+      
+      return data.user;
     },
     onSuccess: (user: User) => {
       queryClient.setQueryData(["/api/user"], user);

@@ -36,7 +36,15 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ message: "Erro ao criar usuário" });
       }
 
-      res.status(201).json(data);
+      // Retorna um objeto estruturado com os dados do usuário
+      res.status(201).json({
+        user: {
+          id: data.user.id,
+          email: data.user.email,
+          username: data.user.user_metadata?.username,
+          displayName: data.user.user_metadata?.displayName
+        }
+      });
     } catch (err) {
       console.error("Erro no registro:", err);
       res.status(500).json({ message: "Erro interno no servidor" });
