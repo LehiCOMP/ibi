@@ -1,3 +1,4 @@
+
 import { createContext, ReactNode, useContext } from "react";
 import {
   useQuery,
@@ -40,6 +41,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     onSuccess: (user: User) => {
       queryClient.setQueryData(["/api/user"], user);
+      toast({
+        title: "Login realizado com sucesso!",
+        description: "Bem-vindo de volta.",
+      });
     },
     onError: (error: Error) => {
       toast({
@@ -59,19 +64,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       return await res.json();
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(["/api/user"], data);
+    onSuccess: (user: User) => {
+      queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Conta criada com sucesso!",
         description: "Bem-vindo à nossa comunidade.",
       });
-      } catch (error) {
-        console.error('Erro detalhado no registro:', error);
-        throw error;
-      }
-    },
-    onSuccess: (user: User) => {
-      queryClient.setQueryData(["/api/user"], user);
     },
     onError: (error: Error) => {
       toast({
@@ -88,6 +86,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     onSuccess: () => {
       queryClient.setQueryData(["/api/user"], null);
+      toast({
+        title: "Logout realizado",
+        description: "Até logo!",
+      });
     },
     onError: (error: Error) => {
       toast({
