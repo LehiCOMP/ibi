@@ -69,18 +69,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   apiRouter.post("/bible-studies", requireAuth, async (req: Request, res: Response) => {
     try {
-      const validated = validateRequest(insertBibleStudySchema, req.body);
+      console.log("Recebendo requisição para criar estudo:", req.body);
       
-      // Adicionar o ID do usuário autenticado como autor
+      const validated = validateRequest(insertBibleStudySchema, req.body);
+      console.log("Dados validados:", validated);
+      
+      if (!req.user) {
+        return res.status(401).json({ message: "Usuário não autenticado" });
+      }
+      
       const studyData = {
         ...validated,
-        authorId: req.user!.id
+        authorId: req.user.id
       };
+      console.log("Dados finais para criação:", studyData);
       
       const study = await storage.createBibleStudy(studyData);
+      console.log("Estudo criado com sucesso:", study);
+      
       res.status(201).json(study);
     } catch (error: any) {
-      res.status(400).json({ message: error.message || "Invalid Bible study data" });
+      console.error("Erro ao criar estudo:", error);
+      res.status(400).json({ 
+        message: error.message || "Erro ao criar estudo bíblico",
+        details: error.stack
+      });
     }
   });
   
