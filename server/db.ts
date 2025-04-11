@@ -22,7 +22,15 @@ export const supabase = createClient(
 let db: ReturnType<typeof drizzle>;
 
 try {
-  const pool = postgres(process.env.VITE_SUPABASE_URL);
+  const pool = postgres(process.env.VITE_SUPABASE_URL, {
+    max: 10,
+    idle_timeout: 20,
+    connect_timeout: 10,
+    prepare: false,
+    connection: {
+      application_name: 'igreja-app'
+    }
+  });
   db = drizzle(pool, { schema });
   console.log("Conexão com banco de dados estabelecida com sucesso");
 } catch (error) {
