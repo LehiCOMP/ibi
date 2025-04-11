@@ -77,15 +77,17 @@ export default function AuthPage() {
   const onRegisterSubmit = async (data: RegisterFormValues) => {
     try {
       const { confirmPassword, ...registerData } = data;
+      console.log("Enviando dados de registro:", registerData);
       await registerMutation.mutateAsync(registerData);
       toast({
         title: "Conta criada com sucesso!",
         description: "Por favor, verifique seu email para confirmar sua conta.",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Erro no registro:", error);
       toast({
         title: "Erro ao criar conta",
-        description: error.message,
+        description: error?.message || "Erro ao tentar criar a conta",
         variant: "destructive",
       });
     }

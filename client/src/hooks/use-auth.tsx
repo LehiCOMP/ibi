@@ -7,6 +7,7 @@ import {
 import { User, InsertUser } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "../lib/supabase";
 
 type AuthContextType = {
   user: User | null;
