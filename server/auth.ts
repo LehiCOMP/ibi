@@ -92,21 +92,32 @@ export function setupAuth(app: Express) {
   // Rota para registro de novos usuários
   app.post("/api/register", async (req, res, next) => {
     try {
+      console.log("Tentando registrar usuário:", req.body.username);
+      
       const existingUser = await storage.getUserByUsername(req.body.username);
       if (existingUser) {
         return res.status(400).json({ message: "Nome de usuário já existe" });
       }
 
-      const user = await storage.createUser({
+      const hashedPassword = await hashPassword(req.body.password);
+      const userData = {
         ...req.body,
-        password: await hashPassword(req.body.password),
-      });
+        password: hashedPassword,
+        created_at: new Date().toISOString()
+      };
+
+      const user = await storage.createUser(userData);
+      console.log("Usuário criado com sucesso:", user);
 
       req.login(user, (err) => {
-        if (err) return next(err);
+        if (err) {
+          console.error("Erro no login após registro:", err);
+          return next(err);
+        }
         res.status(201).json(user);
       });
     } catch (err) {
+      console.error("Erro no registro:", err);
       next(err);
     }
   });
