@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
@@ -23,11 +22,14 @@ let db: ReturnType<typeof drizzle>;
 
 try {
   const pool = postgres(process.env.VITE_SUPABASE_URL, {
-    max: 1,
-    idle_timeout: 20,
-    connect_timeout: 30,
+    max: 3,
+    idle_timeout: 30,
+    connect_timeout: 60,
     connection: {
       application_name: 'igreja-app'
+    },
+    ssl: {
+      rejectUnauthorized: false
     }
   });
   db = drizzle(pool, { schema });
