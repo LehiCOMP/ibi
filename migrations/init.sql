@@ -1,7 +1,14 @@
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE IF NOT EXISTS users (
+DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS forum_replies;
+DROP TABLE IF EXISTS forum_topics;
+DROP TABLE IF EXISTS blog_posts;
+DROP TABLE IF EXISTS bible_studies;
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   username TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL,
@@ -11,7 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS bible_studies (
+CREATE TABLE bible_studies (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
   content TEXT NOT NULL,
@@ -19,46 +26,51 @@ CREATE TABLE IF NOT EXISTS bible_studies (
   image_url TEXT,
   bible_verse TEXT,
   bible_reference TEXT,
-  author_id UUID NOT NULL REFERENCES users(id),
+  author_id UUID NOT NULL,
   category TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  published BOOLEAN DEFAULT true
+  published BOOLEAN DEFAULT true,
+  FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS blog_posts (
+CREATE TABLE blog_posts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
   content TEXT NOT NULL,
   summary TEXT NOT NULL,
   image_url TEXT,
-  author_id UUID NOT NULL REFERENCES users(id),
+  author_id UUID NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   read_time INTEGER NOT NULL,
   views INTEGER DEFAULT 0,
   featured BOOLEAN DEFAULT false,
-  published BOOLEAN DEFAULT true
+  published BOOLEAN DEFAULT true,
+  FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS forum_topics (
+CREATE TABLE forum_topics (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
   content TEXT NOT NULL,
-  author_id UUID NOT NULL REFERENCES users(id),
+  author_id UUID NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   views INTEGER DEFAULT 0,
   reply_count INTEGER DEFAULT 0,
-  last_reply_at TIMESTAMP WITH TIME ZONE
+  last_reply_at TIMESTAMP WITH TIME ZONE,
+  FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS forum_replies (
+CREATE TABLE forum_replies (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  topic_id UUID NOT NULL REFERENCES forum_topics(id),
+  topic_id UUID NOT NULL,
   content TEXT NOT NULL,
-  author_id UUID NOT NULL REFERENCES users(id),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  author_id UUID NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (topic_id) REFERENCES forum_topics(id) ON DELETE CASCADE,
+  FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS events (
+CREATE TABLE events (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
   description TEXT NOT NULL,
