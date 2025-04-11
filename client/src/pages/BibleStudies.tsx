@@ -1,5 +1,6 @@
 
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Link } from 'wouter';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -14,7 +15,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { insertBibleStudySchema } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
-import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 
 const BibleStudies = () => {
@@ -46,6 +46,7 @@ const BibleStudies = () => {
     },
     onSuccess: () => {
       form.reset();
+      setDialogOpen(false);
       toast({
         title: "Estudo criado com sucesso!",
         description: "Seu estudo bíblico foi publicado.",
@@ -64,11 +65,6 @@ const BibleStudies = () => {
   const onSubmit = async (values: any) => {
     try {
       await mutation.mutateAsync(values);
-      // Fechar o diálogo após submissão bem-sucedida
-      const dialog = document.querySelector('dialog');
-      if (dialog) {
-        dialog.close();
-      }
     } catch (error) {
       console.error('Erro ao criar estudo:', error);
       toast({
