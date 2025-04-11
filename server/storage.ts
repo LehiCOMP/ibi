@@ -45,11 +45,23 @@ export const storage = {
   async createUser(userData: InsertUser) {
     try {
       console.log('Tentando criar usuário:', { ...userData, password: '[REDACTED]' });
+      
+      // Verificar se a conexão está ativa
+      const client = await pool.connect();
+      console.log('Conexão com o pool estabelecida');
+      
       const result = await db.insert(users).values(userData).returning();
       console.log('Usuário criado com sucesso:', result[0].id);
+      
+      client.release();
       return result[0];
     } catch (error) {
-      console.error('Erro detalhado ao criar usuário:', error);
+      console.error('Erro detalhado ao criar usuário:', {
+        name: error.name,
+        message: error.message,
+        code: error.code,
+        stack: error.stack
+      });
       throw new Error(`Falha ao criar usuário: ${error.message}`);
     }
   },
