@@ -27,14 +27,16 @@ let db: ReturnType<typeof drizzle>;
 
 try {
   const connectionString = process.env.VITE_SUPABASE_URL;
-  // Usar connection pooling do Supabase
-  const poolUrl = connectionString.replace('.supabase.co', '-pooler.supabase.co');
   
-  const pool = postgres(poolUrl, {
-    max: 10,
-    idle_timeout: 300,
-    connect_timeout: 300,
-    max_lifetime: 60 * 60, // 1 hora
+  const pool = postgres(connectionString, {
+    max: 5,
+    idle_timeout: 20,
+    connect_timeout: 10,
+    connection: {
+      application_name: 'igreja-app',
+      keepalive: true,
+      keepaliveInitialDelayMillis: 1000
+    },
     connection: {
       application_name: 'igreja-app'
     },
