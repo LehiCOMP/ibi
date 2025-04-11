@@ -29,6 +29,11 @@ export function setupAuth(app: Express) {
 
       if (error) {
         console.error("Erro no registro Supabase:", error);
+        if (error.message.includes("Email not confirmed")) {
+          return res.status(400).json({ 
+            message: "Por favor, verifique seu email para confirmar o cadastro. Um link de confirmação foi enviado para seu email." 
+          });
+        }
         return res.status(400).json({ message: error.message });
       }
 
