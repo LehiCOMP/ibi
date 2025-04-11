@@ -76,12 +76,12 @@ export default function AuthPage() {
   };
 
   const { toast } = useToast();
-  
+
   const onRegisterSubmit = async (data: RegisterFormValues) => {
     try {
       const { confirmPassword, ...registerData } = data;
       console.log("Iniciando registro com dados:", registerData);
-      
+
       if (registerData.password.length < 6) {
         toast({
           title: "Erro de validação",
@@ -91,12 +91,25 @@ export default function AuthPage() {
         return;
       }
 
+      if (!registerData.username || !registerData.email || !registerData.password) {
+        toast({
+          title: "Erro de validação",
+          description: "Todos os campos são obrigatórios",
+          variant: "destructive",
+        });
+        return;
+      }
+
       await registerMutation.mutateAsync(registerData);
+      toast({
+        title: "Sucesso!",
+        description: "Conta criada com sucesso",
+      });
       navigate("/");
     } catch (error: any) {
       console.error("Erro no registro:", error);
       toast({
-        title: "Erro ao criar conta",
+        title: "Falha no cadastro",
         description: error?.message || "Erro ao tentar criar a conta",
         variant: "destructive",
       });
@@ -122,7 +135,7 @@ export default function AuthPage() {
                 <TabsTrigger value="login">Entrar</TabsTrigger>
                 <TabsTrigger value="register">Cadastrar</TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="login">
                 <form onSubmit={loginForm.handleSubmit(onLoginSubmit)}>
                   <div className="space-y-4">
@@ -139,7 +152,7 @@ export default function AuthPage() {
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label htmlFor="login-password">Senha</Label>
                       <Input
@@ -154,7 +167,7 @@ export default function AuthPage() {
                         </p>
                       )}
                     </div>
-                    
+
                     <Button
                       type="submit"
                       className="w-full"
@@ -172,7 +185,7 @@ export default function AuthPage() {
                   </div>
                 </form>
               </TabsContent>
-              
+
               <TabsContent value="register">
                 <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
                   <div className="space-y-4">
@@ -189,7 +202,7 @@ export default function AuthPage() {
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label htmlFor="register-displayname">Nome de Exibição</Label>
                       <Input
@@ -203,7 +216,7 @@ export default function AuthPage() {
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label htmlFor="register-email">Email</Label>
                       <Input
@@ -218,7 +231,7 @@ export default function AuthPage() {
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label htmlFor="register-avatar">Avatar (URL)</Label>
                       <Input
@@ -227,7 +240,7 @@ export default function AuthPage() {
                         placeholder="URL da sua foto (opcional)"
                       />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label htmlFor="register-password">Senha</Label>
                       <Input
@@ -242,7 +255,7 @@ export default function AuthPage() {
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label htmlFor="register-confirmpassword">Confirmar Senha</Label>
                       <Input
@@ -257,7 +270,7 @@ export default function AuthPage() {
                         </p>
                       )}
                     </div>
-                    
+
                     <Button
                       type="submit"
                       className="w-full"
@@ -279,7 +292,7 @@ export default function AuthPage() {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Seção Hero */}
       <div className="md:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 text-white p-12 flex flex-col justify-center">
         <div className="max-w-lg mx-auto">
