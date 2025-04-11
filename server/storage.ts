@@ -1,5 +1,5 @@
 import { 
-  users, type User, type InsertUser,
+  users, type User, type InsertUser, type NewUser,
   bibleStudies, type BibleStudy, type InsertBibleStudy,
   blogPosts, type BlogPost, type InsertBlogPost,
   forumTopics, type ForumTopic, type InsertForumTopic,
@@ -13,7 +13,7 @@ export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  createUser(user: NewUser): Promise<User>;
   
   // Bible Study operations
   getBibleStudies(): Promise<BibleStudy[]>;
@@ -102,7 +102,7 @@ export class MemStorage implements IStorage {
       email: "joao@igrejaaonline.com",
       avatar: "https://randomuser.me/api/portraits/men/42.jpg",
     };
-
+    
     const diaconaAna: InsertUser = {
       username: "diacona.ana",
       password: "password",
@@ -484,144 +484,103 @@ export class MemStorage implements IStorage {
   }
 }
 
-export class DatabaseStorage implements IStorage {
-  async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
-  }
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+import { users, bibleStudies, blogPosts, forumTopics, forumReplies, events } from "@shared/schema";
+import type { NewUser, User } from "@shared/schema";
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
-  }
+export const storage = {
+  async getUser(id: number) {
+    const result = await db.select().from(users).where(eq(users.id, id));
+    return result[0];
+  },
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(insertUser)
-      .returning();
-    return user;
-  }
+  async getUserByUsername(username: string) {
+    const result = await db.select().from(users).where(eq(users.username, username));
+    return result[0];
+  },
 
-  async getBibleStudies(): Promise<BibleStudy[]> {
-    return db.select().from(bibleStudies).orderBy(desc(bibleStudies.createdAt));
-  }
+  async createUser(user: NewUser) {
+    const result = await db.insert(users).values(user).returning();
+    return result[0];
+  },
 
-  async getBibleStudy(id: number): Promise<BibleStudy | undefined> {
-    const [study] = await db.select().from(bibleStudies).where(eq(bibleStudies.id, id));
-    return study || undefined;
-  }
+  async getBibleStudies() {
+    return await db.select().from(bibleStudies).orderBy(bibleStudies.createdAt);
+  },
 
-  async createBibleStudy(study: InsertBibleStudy): Promise<BibleStudy> {
-    const [newStudy] = await db
-      .insert(bibleStudies)
-      .values(study)
-      .returning();
-    return newStudy;
-  }
+  async getBibleStudy(id: number) {
+    const result = await db.select().from(bibleStudies).where(eq(bibleStudies.id, id));
+    return result[0];
+  },
 
-  async getBlogPosts(): Promise<BlogPost[]> {
-    return db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt));
-  }
+  async createBibleStudy(study: typeof bibleStudies.$inferInsert) {
+    const result = await db.insert(bibleStudies).values(study).returning();
+    return result[0];
+  },
 
-  async getFeaturedBlogPost(): Promise<BlogPost | undefined> {
-    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.featured, true));
-    return post || undefined;
-  }
+  async getBlogPosts() {
+    return await db.select().from(blogPosts).orderBy(blogPosts.createdAt);
+  },
 
-  async getBlogPost(id: number): Promise<BlogPost | undefined> {
-    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
-    return post || undefined;
-  }
+  async getBlogPost(id: number) {
+    const result = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
+    return result[0];
+  },
 
-  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
-    const [newPost] = await db
-      .insert(blogPosts)
-      .values({ ...post, views: 0 })
-      .returning();
-    return newPost;
-  }
+  async createBlogPost(post: typeof blogPosts.$inferInsert) {
+    const result = await db.insert(blogPosts).values(post).returning();
+    return result[0];
+  },
 
-  async incrementBlogPostViews(id: number): Promise<void> {
+  async getForumTopics() {
+    return await db.select().from(forumTopics).orderBy(forumTopics.createdAt);
+  },
+
+  async getForumTopic(id: number) {
+    const result = await db.select().from(forumTopics).where(eq(forumTopics.id, id));
+    return result[0];
+  },
+
+  async createForumTopic(topic: typeof forumTopics.$inferInsert) {
+    const result = await db.insert(forumTopics).values(topic).returning();
+    return result[0];
+  },
+
+  async getForumReplies(topicId: number) {
+    return await db.select().from(forumReplies).where(eq(forumReplies.topicId, topicId));
+  },
+
+  async createForumReply(reply: typeof forumReplies.$inferInsert) {
+    const result = await db.insert(forumReplies).values(reply).returning();
+    return result[0];
+  },
+
+  async getEvents() {
+    return await db.select().from(events).orderBy(events.startTime);
+  },
+
+  async getEvent(id: number) {
+    const result = await db.select().from(events).where(eq(events.id, id));
+    return result[0];
+  },
+
+  async createEvent(event: typeof events.$inferInsert) {
+    const result = await db.insert(events).values(event).returning();
+    return result[0];
+  },
+
+  async incrementBlogPostViews(id: number) {
     await db
       .update(blogPosts)
-      .set({ views: db.raw('views + 1') })
+      .set({ views: blogPosts.views + 1 })
       .where(eq(blogPosts.id, id));
-  }
+  },
 
-  async getForumTopics(): Promise<ForumTopic[]> {
-    return db.select().from(forumTopics).orderBy(desc(forumTopics.createdAt));
-  }
-
-  async getForumTopic(id: number): Promise<ForumTopic | undefined> {
-    const [topic] = await db.select().from(forumTopics).where(eq(forumTopics.id, id));
-    return topic || undefined;
-  }
-
-  async createForumTopic(topic: InsertForumTopic): Promise<ForumTopic> {
-    const [newTopic] = await db
-      .insert(forumTopics)
-      .values({ ...topic, views: 0, replyCount: 0 })
-      .returning();
-    return newTopic;
-  }
-
-  async incrementForumTopicViews(id: number): Promise<void> {
+  async incrementForumTopicViews(id: number) {
     await db
       .update(forumTopics)
-      .set({ views: db.raw('views + 1') })
+      .set({ views: forumTopics.views + 1 })
       .where(eq(forumTopics.id, id));
   }
-
-  async getForumReplies(topicId: number): Promise<ForumReply[]> {
-    return db
-      .select()
-      .from(forumReplies)
-      .where(eq(forumReplies.topicId, topicId))
-      .orderBy(forumReplies.createdAt);
-  }
-
-  async createForumReply(reply: InsertForumReply): Promise<ForumReply> {
-    // Start a transaction to update both the reply and the topic's reply count
-    const [newReply] = await db.transaction(async (tx) => {
-      // Create the reply
-      const [newReply] = await tx
-        .insert(forumReplies)
-        .values(reply)
-        .returning();
-      
-      // Increment the topic's reply count
-      await tx
-        .update(forumTopics)
-        .set({ replyCount: db.raw('reply_count + 1') })
-        .where(eq(forumTopics.id, reply.topicId));
-      
-      return [newReply];
-    });
-    
-    return newReply;
-  }
-
-  async getEvents(): Promise<Event[]> {
-    return db
-      .select()
-      .from(events)
-      .orderBy(events.startTime);
-  }
-
-  async getEvent(id: number): Promise<Event | undefined> {
-    const [event] = await db.select().from(events).where(eq(events.id, id));
-    return event || undefined;
-  }
-
-  async createEvent(event: InsertEvent): Promise<Event> {
-    const [newEvent] = await db
-      .insert(events)
-      .values(event)
-      .returning();
-    return newEvent;
-  }
-}
-
-// Use the database storage instead of memory storage
-export const storage = new DatabaseStorage();
+};
