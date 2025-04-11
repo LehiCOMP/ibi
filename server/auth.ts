@@ -106,28 +106,31 @@ export function setupAuth(app: Express) {
         display_name: req.body.displayName || req.body.username,
         password: hashedPassword,
         avatar: req.body.avatar || null,
-        email: req.body.email || null,
+        email: req.body.email,
         created_at: new Date().toISOString()
       };
 
       console.log("Criando usuário com dados:", userData);
 
-      const user = await storage.createUser(userData);
-      console.log("Usuário criado com sucesso:", user);
+      try {
+        const user = await storage.createUser(userData);
+        console.log("Usuário criado com sucesso:", user);
 
-      // Login automático após o registro
-      req.login(user, (err) => {
-        if (err) {
-          console.error("Erro no login após registro:", err);
-          return next(err);
-        }
-        res.status(201).json({
-          id: user.id,
-          username: user.username,
-          display_name: user.display_name,
-          avatar: user.avatar
+        // Login automático após o registro
+        req.login(user, (err) => {
+          if (err) {
+            console.error("Erro no login após registro:", err);
+            return next(err);
+          }
+          return res.status(201).json(user);
         });
-      });
+      } catch (error) {
+        console.error("Erro ao criar usuário:", error);
+        return res.status(500).json({ 
+          message: "Erro ao criar usuário",
+          error: error.message 
+        });
+      }
     } catch (err) {
       console.error("Erro no registro:", err);
       res.status(500).json({ message: "Erro ao criar usuário: " + err.message });
