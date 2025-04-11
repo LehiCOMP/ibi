@@ -64,13 +64,13 @@ export function setupAuth(app: Express) {
           console.log('Usuário não encontrado:', username);
           return done(null, false);
         }
-        
+
         const isValid = await comparePasswords(password, user.password);
         if (!isValid) {
           console.log('Senha inválida para usuário:', username);
           return done(null, false);
         }
-        
+
         return done(null, user);
       } catch (err) {
         console.error('Erro na autenticação:', err);
@@ -92,33 +92,45 @@ export function setupAuth(app: Express) {
   // Rota para registro de novos usuários
   app.post("/api/register", async (req, res, next) => {
     try {
-      console.log("Tentando registrar usuário:", req.body.username);
-      
+      console.log("Tentando registrar usuário:", req.body);
+
       const existingUser = await storage.getUserByUsername(req.body.username);
       if (existingUser) {
         return res.status(400).json({ message: "Nome de usuário já existe" });
       }
 
       const hashedPassword = await hashPassword(req.body.password);
+
       const userData = {
-        ...req.body,
+        username: req.body.username,
+        display_name: req.body.displayName || req.body.username,
         password: hashedPassword,
+        avatar: req.body.avatar || null,
+        email: req.body.email || null,
         created_at: new Date().toISOString()
       };
+
+      console.log("Criando usuário com dados:", userData);
 
       const user = await storage.createUser(userData);
       console.log("Usuário criado com sucesso:", user);
 
+      // Login automático após o registro
       req.login(user, (err) => {
         if (err) {
           console.error("Erro no login após registro:", err);
           return next(err);
         }
-        res.status(201).json(user);
+        res.status(201).json({
+          id: user.id,
+          username: user.username,
+          display_name: user.display_name,
+          avatar: user.avatar
+        });
       });
     } catch (err) {
       console.error("Erro no registro:", err);
-      next(err);
+      res.status(500).json({ message: "Erro ao criar usuário: " + err.message });
     }
   });
 
@@ -127,7 +139,7 @@ export function setupAuth(app: Express) {
     passport.authenticate("local", (err, user, info) => {
       if (err) return next(err);
       if (!user) return res.status(401).json({ message: "Credenciais inválidas" });
-      
+
       req.login(user, (loginErr) => {
         if (loginErr) return next(loginErr);
         return res.json(user);
