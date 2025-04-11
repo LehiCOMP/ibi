@@ -51,18 +51,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const registerMutation = useMutation({
     mutationFn: async (credentials: InsertUser) => {
-      console.log('Iniciando processo de registro no Supabase...');
-      try {
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email: credentials.email,
-          password: credentials.password
-        });
-        
-        console.log('Resposta do Supabase auth:', { authData, authError });
-        
-        if (authError) {
-          console.error('Erro na autenticação:', authError);
-          throw authError;
+      const res = await apiRequest("POST", "/api/register", credentials);
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Erro ao registrar usuário");
+      }
+      return await res.json();
+    },
+    onSuccess: (user: User) => {
+      queryClient.setQueryData(["/api/user"], user);
+      toast({
+        title: "Conta criada com sucesso!",
+        description: "Bem-vindo à nossa comunidade.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Erro no cadastro",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
         }
 
         if (!authData.user?.id) {
