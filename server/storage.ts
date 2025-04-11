@@ -523,26 +523,51 @@ export const storage = {
   },
 
   async getBibleStudies() {
-    return await db.select().from(bibleStudies).orderBy(bibleStudies.createdAt);
+    const { data, error } = await supabase
+      .from('bible_studies')
+      .select()
+      .order('created_at');
+    if (error) throw error;
+    return data;
   },
 
-  async getBibleStudy(id: number) {
-    const result = await db.select().from(bibleStudies).where(eq(bibleStudies.id, id));
-    return result[0];
+  async getBibleStudy(id: string) {
+    const { data, error } = await supabase
+      .from('bible_studies')
+      .select()
+      .eq('id', id)
+      .single();
+    if (error) throw error;
+    return data;
   },
 
-  async createBibleStudy(study: typeof bibleStudies.$inferInsert) {
-    const result = await db.insert(bibleStudies).values(study).returning();
-    return result[0];
+  async createBibleStudy(study: InsertBibleStudy) {
+    const { data, error } = await supabase
+      .from('bible_studies')
+      .insert(study)
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
   },
 
   async getBlogPosts() {
-    return await db.select().from(blogPosts).orderBy(blogPosts.createdAt);
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select()
+      .order('created_at');
+    if (error) throw error;
+    return data;
   },
 
-  async getBlogPost(id: number) {
-    const result = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
-    return result[0];
+  async getBlogPost(id: string) {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select()
+      .eq('id', id)
+      .single();
+    if (error) throw error;
+    return data;
   },
 
   async createBlogPost(post: typeof blogPosts.$inferInsert) {
