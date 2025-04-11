@@ -33,6 +33,7 @@ async function seed() {
       .upsert({
         id: adminId,
         username: 'admin',
+        password: 'adminpass123',
         display_name: 'Administrador',
         email: 'lehikayn@gmail.com',
         created_at: new Date().toISOString()
