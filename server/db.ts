@@ -5,13 +5,19 @@ import postgres from 'postgres';
 import pg from 'pg';
 const { Pool } = pg;
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
-  throw new Error('As variáveis de ambiente SUPABASE_URL e SUPABASE_KEY são necessárias');
+if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_KEY) {
+  throw new Error('As variáveis de ambiente VITE_SUPABASE_URL e VITE_SUPABASE_KEY são necessárias');
 }
 
 export const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
+  process.env.VITE_SUPABASE_URL,
+  process.env.VITE_SUPABASE_KEY,
+  {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true
+    }
+  }
 );
 
 import * as schema from "@shared/schema";
