@@ -78,8 +78,10 @@ export default function AuthPage() {
   const { toast } = useToast();
 
   const onRegisterSubmit = async (data: RegisterFormValues) => {
+    console.log("Formulário submetido com dados:", data);
     try {
       const { confirmPassword, ...registerData } = data;
+      console.log("Dados para registro:", registerData);
       console.log("Iniciando registro com dados:", registerData);
 
       if (registerData.password.length < 6) {
