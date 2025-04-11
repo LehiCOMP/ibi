@@ -77,6 +77,11 @@ export function setupAuth(app: Express) {
       const hashedPassword = await bcrypt.hash(userData.password, 10);
 
       try {
+        console.log("Tentando criar usuário com dados:", {
+          ...userData,
+          password: "[REDACTED]"
+        });
+
         const newUser = await storage.createUser({
           ...userData,
           password: hashedPassword
@@ -86,6 +91,8 @@ export function setupAuth(app: Express) {
           console.error("Usuário não foi criado");
           return res.status(500).json({ message: "Erro ao criar usuário" });
         }
+
+        console.log("Usuário criado com sucesso:", newUser.id);
 
         // Login automático após registro
         req.login(newUser, (err) => {

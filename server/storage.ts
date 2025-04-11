@@ -44,16 +44,20 @@ export const storage = {
 
   async createUser(userData: InsertUser) {
     try {
-      console.log('Tentando criar usuário:', { ...userData, password: '[REDACTED]' });
+      console.log("Storage: Iniciando criação do usuário");
       const result = await db.insert(users).values(userData).returning();
-      console.log('Usuário criado com sucesso:', result[0].id);
+      console.log("Storage: Usuário criado com sucesso");
       return result[0];
-    } catch (error) {
-      console.error('Erro detalhado ao criar usuário:', error);
+    } catch (error: any) {
+      console.error("Storage: Erro ao criar usuário:", {
+        code: error.code,
+        message: error.message,
+        detail: error.detail
+      });
       if (error.code === '23505') {
-        throw new Error('Username ou email já está em uso');
+        throw new Error("Usuário ou email já está em uso");
       }
-      throw new Error('Erro ao criar usuário. Por favor, tente novamente.');
+      throw error;
     }
   },
 
