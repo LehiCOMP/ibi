@@ -14,7 +14,7 @@ export function setupAuth(app: Express) {
   // Rota de registro
   app.post("/api/register", async (req, res) => {
     const { email, password, username, displayName } = req.body;
-    
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -64,7 +64,13 @@ export function setupAuth(app: Express) {
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password
+      password,
+      options: {
+        emailRedirectTo: undefined,
+        data: {
+          email_confirm: false
+        }
+      }
     });
 
     if (error) {
