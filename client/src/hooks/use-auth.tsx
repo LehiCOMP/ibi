@@ -52,33 +52,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const registerMutation = useMutation({
     mutationFn: async (credentials: InsertUser) => {
-      try {
-        const res = await apiRequest("POST", "/api/register", credentials);
-        if (!res.ok) {
-          const error = await res.json();
-          throw new Error(error.message || "Erro ao registrar usuário");
-        }
-        const authData = await res.json();
-        if (!authData.user?.id) {
-          throw new Error('Usuário não foi criado corretamente');
-        }
-
-        console.log('Criando perfil do usuário...');
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert({
-            id: authData.user.id,
-            username: credentials.username,
-            display_name: credentials.displayName || credentials.username,
-            email: credentials.email,
-            created_at: new Date().toISOString()
-          });
-
-        if (profileError) {
-          console.error('Erro ao criar perfil:', profileError);
-          throw profileError;
-        }
-        return authData.user;
+      const res = await apiRequest("POST", "/api/register", credentials);
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Erro ao registrar usuário");
+      }
+      return await res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["/api/user"], data);
+      toast({
+        title: "Conta criada com sucesso!",
+        description: "Bem-vindo à nossa comunidade.",
+      });
       } catch (error) {
         console.error('Erro detalhado no registro:', error);
         throw error;
