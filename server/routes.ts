@@ -1,4 +1,4 @@
-import express, { type Express, Request, Response } from "express";
+import express, { type Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
@@ -10,8 +10,20 @@ import {
 } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
+import { setupAuth } from "./auth";
+
+// Middleware para verificar autenticação
+function requireAuth(req: Request, res: Response, next: NextFunction) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ message: "Não autenticado. Faça login para continuar." });
+  }
+  next();
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Configurar autenticação
+  setupAuth(app);
+  
   const apiRouter = express.Router();
   
   // Helper function to handle validation errors
@@ -55,10 +67,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  apiRouter.post("/bible-studies", async (req: Request, res: Response) => {
+  apiRouter.post("/bible-studies", requireAuth, async (req: Request, res: Response) => {
     try {
       const validated = validateRequest(insertBibleStudySchema, req.body);
-      const study = await storage.createBibleStudy(validated);
+      
+      // Adicionar o ID do usuário autenticado como autor
+      const studyData = {
+        ...validated,
+        authorId: req.user!.id
+      };
+      
+      const study = await storage.createBibleStudy(studyData);
       res.status(201).json(study);
     } catch (error: any) {
       res.status(400).json({ message: error.message || "Invalid Bible study data" });
@@ -111,7 +130,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  apiRouter.post("/blog-posts", async (req: Request, res: Response) => {
+  apiRouter.post("/blog-posts", requireAuth, async (req: Request, res: Response) => {
     try {
       const validated = validateRequest(insertBlogPostSchema, req.body);
       const post = await storage.createBlogPost(validated);
@@ -186,7 +205,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  apiRouter.post("/forum-topics", async (req: Request, res: Response) => {
+  apiRouter.post("/forum-topics", requireAuth, async (req: Request, res: Response) => {
     try {
       const validated = validateRequest(insertForumTopicSchema, req.body);
       const topic = await storage.createForumTopic(validated);
@@ -208,7 +227,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Forum Replies Endpoints
-  apiRouter.post("/forum-replies", async (req: Request, res: Response) => {
+  apiRouter.post("/forum-replies", requireAuth, async (req: Request, res: Response) => {
     try {
       const validated = validateRequest(insertForumReplySchema, req.body);
       
@@ -268,7 +287,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  apiRouter.post("/events", async (req: Request, res: Response) => {
+  apiRouter.post("/events", requireAuth, async (req: Request, res: Response) => {
     try {
       const validated = validateRequest(insertEventSchema, req.body);
       const event = await storage.createEvent(validated);
