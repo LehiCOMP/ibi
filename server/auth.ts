@@ -23,7 +23,8 @@ export function setupAuth(app: Express) {
           data: {
             username,
             displayName
-          }
+          },
+          emailRedirectTo: undefined
         }
       });
 
