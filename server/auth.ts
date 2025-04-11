@@ -90,50 +90,54 @@ export function setupAuth(app: Express) {
   });
 
   // Rota para registro de novos usuários
-  app.post("/api/register", async (req, res, next) => {
+  app.post("/api/register", async (req, res) => {
     try {
-      console.log("Tentando registrar usuário:", req.body);
+      console.log("Dados recebidos para registro:", req.body);
 
-      const existingUser = await storage.getUserByUsername(req.body.username);
+      const { username, password, email, displayName } = req.body;
+
+      if (!username || !password || !email) {
+        return res.status(400).json({ 
+          message: "Username, password e email são obrigatórios" 
+        });
+      }
+
+      const existingUser = await storage.getUserByUsername(username);
       if (existingUser) {
         return res.status(400).json({ message: "Nome de usuário já existe" });
       }
 
-      const hashedPassword = await hashPassword(req.body.password);
+      const hashedPassword = await hashPassword(password);
 
       const userData = {
-        username: req.body.username,
-        display_name: req.body.displayName || req.body.username,
+        username,
+        display_name: displayName || username,
         password: hashedPassword,
-        avatar: req.body.avatar || null,
-        email: req.body.email,
+        email,
         created_at: new Date().toISOString()
       };
 
-      console.log("Criando usuário com dados:", userData);
-
-      try {
-        const user = await storage.createUser(userData);
-        console.log("Usuário criado com sucesso:", user);
-
-        // Login automático após o registro
-        req.login(user, (err) => {
-          if (err) {
-            console.error("Erro no login após registro:", err);
-            return next(err);
-          }
-          return res.status(201).json(user);
+      const user = await storage.createUser(userData);
+      
+      req.login(user, (err) => {
+        if (err) {
+          console.error("Erro no login após registro:", err);
+          return res.status(500).json({ 
+            message: "Erro ao fazer login após registro" 
+          });
+        }
+        return res.status(201).json({
+          id: user.id,
+          username: user.username,
+          display_name: user.display_name,
+          email: user.email
         });
-      } catch (error) {
-        console.error("Erro ao criar usuário:", error);
-        return res.status(500).json({ 
-          message: "Erro ao criar usuário",
-          error: error.message 
-        });
-      }
-    } catch (err) {
-      console.error("Erro no registro:", err);
-      res.status(500).json({ message: "Erro ao criar usuário: " + err.message });
+      });
+    } catch (error) {
+      console.error("Erro no registro:", error);
+      res.status(500).json({ 
+        message: "Erro ao criar usuário: " + error.message 
+      });
     }
   });
 

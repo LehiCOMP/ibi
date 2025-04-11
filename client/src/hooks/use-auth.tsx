@@ -50,7 +50,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const registerMutation = useMutation({
     mutationFn: async (credentials: InsertUser) => {
+      console.log("Enviando dados de registro:", credentials);
       const res = await apiRequest("POST", "/api/register", credentials);
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Erro ao cadastrar usuário");
+      }
       return await res.json();
     },
     onSuccess: (user: User) => {
