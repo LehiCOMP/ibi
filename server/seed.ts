@@ -18,7 +18,7 @@ async function seed() {
   try {
     console.log('Criando usuário admin...');
     const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: 'admin@igrejaaonline.com',
+      email: 'lehikayn@gmail.com',
       password: 'adminpass123',
     });
 
@@ -34,7 +34,7 @@ async function seed() {
         id: adminId,
         username: 'admin',
         display_name: 'Administrador',
-        email: 'admin@igrejaaonline.com'
+        email: 'lehikayn@gmail.com'
       });
 
     if (profileError) throw profileError;
