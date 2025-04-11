@@ -250,7 +250,7 @@ const Home = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div className="bg-blue-50 p-6 rounded-lg hover-scale">
                   <h3 className="font-heading font-semibold text-lg mb-2 text-primary">Horários de Culto</h3>
-                  <ul className="space-y-2 text-sm text-left list-inside list-disc text-neutral-900">
+                  <ul className="space-y-2 text-sm text-left list-inside list-disc">
                     <li><strong>Domingo 18:00</strong> - Celebração</li>
                     <li><strong>Domingo 08:30</strong> - Escola Bíblica</li>
                     <li><strong>Terça 19:30</strong> - Estudo da Palavra</li>
@@ -261,7 +261,7 @@ const Home = () => {
 
                 <div className="bg-blue-50 p-6 rounded-lg hover-scale">
                   <h3 className="font-heading font-semibold text-lg mb-2 text-primary">Localização e Contato</h3>
-                  <p className="text-sm text-left mb-2 text-neutral-900">
+                  <p className="text-sm text-left mb-2">
                     <strong>Endereço:</strong> Parnaíba - PI Rua Anhanguera, N° 3330, Bairro Frei Higino
                   </p>
                   <p className="text-sm text-left mb-2">
