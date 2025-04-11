@@ -7,7 +7,6 @@ import {
 import { User, InsertUser } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "../lib/supabase";
 
 type AuthContextType = {
   user: User | null;
@@ -21,8 +20,10 @@ type AuthContextType = {
 type LoginData = Pick<InsertUser, "username" | "password">;
 
 export const AuthContext = createContext<AuthContextType | null>(null);
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
+
   const {
     data: user,
     error,
@@ -51,29 +52,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const registerMutation = useMutation({
     mutationFn: async (credentials: InsertUser) => {
-      const res = await apiRequest("POST", "/api/register", credentials);
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Erro ao registrar usuário");
-      }
-      return await res.json();
-    },
-    onSuccess: (user: User) => {
-      queryClient.setQueryData(["/api/user"], user);
-      toast({
-        title: "Conta criada com sucesso!",
-        description: "Bem-vindo à nossa comunidade.",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Erro no cadastro",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
+      try {
+        const res = await apiRequest("POST", "/api/register", credentials);
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(error.message || "Erro ao registrar usuário");
         }
-
+        const authData = await res.json();
         if (!authData.user?.id) {
           throw new Error('Usuário não foi criado corretamente');
         }
@@ -93,7 +78,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           console.error('Erro ao criar perfil:', profileError);
           throw profileError;
         }
-        
         return authData.user;
       } catch (error) {
         console.error('Erro detalhado no registro:', error);
