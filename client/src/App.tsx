@@ -66,7 +66,7 @@ export default function App() {
       <AuthProvider>
         <div className="min-h-screen bg-neutral-lightest">
           <Header />
-          <main className="container mx-auto py-6 px-4">
+          <main className="w-full h-full overflow-y-auto">
             <Router />
           </main>
           <Toaster />

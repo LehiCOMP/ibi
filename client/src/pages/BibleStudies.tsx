@@ -65,7 +65,7 @@ const BibleStudies = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen w-full px-4 py-16 overflow-y-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="font-heading text-3xl md:text-4xl font-bold text-primary">Estudos Bíblicos</h1>
         
