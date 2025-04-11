@@ -9,11 +9,12 @@ export type Database = {
           created_at: string
           display_name: string
           avatar_url: string
+          username: string
         }
       }
       events: {
         Row: {
-          id: number
+          id: string
           title: string
           description: string
           start_time: string
@@ -24,14 +25,34 @@ export type Database = {
       }
       bible_studies: {
         Row: {
-          id: number
+          id: string
           title: string
           content: string
           author_id: string
           created_at: string
         }
       }
-      // Adicione outras tabelas conforme necessário
+      forum_topics: {
+        Row: {
+          id: string
+          title: string
+          content: string
+          author_id: string
+          created_at: string
+          views: number
+          reply_count: number
+          last_reply_at: string | null
+        }
+      }
+      forum_replies: {
+        Row: {
+          id: string
+          topic_id: string
+          content: string
+          author_id: string
+          created_at: string
+        }
+      }
     }
   }
 }

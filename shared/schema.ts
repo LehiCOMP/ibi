@@ -1,10 +1,9 @@
-import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, integer, boolean, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// User schema
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id: uuid("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
   displayName: text("display_name").notNull(),
@@ -13,103 +12,55 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
-  displayName: true,
-  email: true,
-  avatar: true,
-});
-
-// Bible Studies schema
 export const bibleStudies = pgTable("bible_studies", {
-  id: serial("id").primaryKey(),
+  id: uuid("id").primaryKey(),
   title: text("title").notNull(),
   content: text("content").notNull(),
   summary: text("summary").notNull(),
   imageUrl: text("image_url"),
   bibleVerse: text("bible_verse"),
   bibleReference: text("bible_reference"),
-  authorId: integer("author_id").notNull(),
+  authorId: uuid("author_id").notNull(),
   category: text("category"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   published: boolean("published").default(true).notNull(),
 });
 
-export const insertBibleStudySchema = createInsertSchema(bibleStudies).pick({
-  title: true,
-  content: true,
-  summary: true,
-  imageUrl: true,
-  bibleVerse: true,
-  bibleReference: true,
-  authorId: true,
-  category: true,
-  published: true,
-});
-
-// Blog Posts schema
 export const blogPosts = pgTable("blog_posts", {
-  id: serial("id").primaryKey(),
+  id: uuid("id").primaryKey(),
   title: text("title").notNull(),
   content: text("content").notNull(),
   summary: text("summary").notNull(),
   imageUrl: text("image_url"),
-  authorId: integer("author_id").notNull(),
+  authorId: uuid("author_id").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  readTime: integer("read_time").notNull(), // in minutes
+  readTime: integer("read_time").notNull(),
   views: integer("views").default(0).notNull(),
   featured: boolean("featured").default(false).notNull(),
   published: boolean("published").default(true).notNull(),
 });
 
-export const insertBlogPostSchema = createInsertSchema(blogPosts).pick({
-  title: true,
-  content: true,
-  summary: true,
-  imageUrl: true,
-  authorId: true,
-  readTime: true,
-  featured: true,
-  published: true,
-});
-
-// Forum Topics schema
 export const forumTopics = pgTable("forum_topics", {
-  id: serial("id").primaryKey(),
+  id: uuid("id").primaryKey(),
   title: text("title").notNull(),
-  content: text("content").notNull(), 
-  authorId: integer("author_id").notNull(),
+  content: text("content").notNull(),
+  authorId: uuid("author_id").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   views: integer("views").default(0).notNull(),
   replyCount: integer("reply_count").default(0).notNull(),
   lastReplyAt: timestamp("last_reply_at"),
 });
 
-export const insertForumTopicSchema = createInsertSchema(forumTopics).pick({
-  title: true,
-  content: true,
-  authorId: true,
-});
-
-// Forum Replies schema
 export const forumReplies = pgTable("forum_replies", {
-  id: serial("id").primaryKey(),
-  topicId: integer("topic_id").notNull(),
+  id: uuid("id").primaryKey(),
+  topicId: uuid("topic_id").notNull(),
   content: text("content").notNull(),
-  authorId: integer("author_id").notNull(),
+  authorId: uuid("author_id").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertForumReplySchema = createInsertSchema(forumReplies).pick({
-  topicId: true,
-  content: true,
-  authorId: true,
-});
-
-// Events schema
 export const events = pgTable("events", {
-  id: serial("id").primaryKey(),
+  id: uuid("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description").notNull(),
   location: text("location").notNull(),
@@ -119,14 +70,14 @@ export const events = pgTable("events", {
   category: text("category"),
 });
 
-export const insertEventSchema = createInsertSchema(events).pick({
-  title: true,
-  description: true,
-  location: true,
-  startTime: true,
-  endTime: true,
-  category: true,
-});
+// Export schemas
+export const insertUserSchema = createInsertSchema(users);
+export const insertBibleStudySchema = createInsertSchema(bibleStudies);
+export const insertBlogPostSchema = createInsertSchema(blogPosts);
+export const insertForumTopicSchema = createInsertSchema(forumTopics);
+export const insertForumReplySchema = createInsertSchema(forumReplies);
+export const insertEventSchema = createInsertSchema(events);
+
 
 // Export types
 export type User = typeof users.$inferSelect;

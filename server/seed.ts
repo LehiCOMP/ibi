@@ -1,5 +1,7 @@
-
 import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 async function seed() {
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
@@ -7,40 +9,19 @@ async function seed() {
   }
 
   console.log('Iniciando seed do banco de dados...');
-  
+
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
   try {
-    console.log('Inserindo usuários...');
-    const users = [
-      {
-        username: "admin",
-        email: "admin@igrejaaonline.com",
-        display_name: "Administrador",
-        avatar_url: "https://randomuser.me/api/portraits/men/32.jpg",
-      },
-      {
-        username: "pastora.maria",
-        email: "maria@igrejaaonline.com",
-        display_name: "Pastora Maria Silva",
-        avatar_url: "https://randomuser.me/api/portraits/women/65.jpg",
-      },
-    ];
-
-    const { data: usersData, error: usersError } = await supabase
-      .from('users')
-      .insert(users)
-      .select();
-
-    if (usersError) throw usersError;
-    console.log('Usuários inseridos com sucesso:', usersData);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Usuário não autenticado');
 
     console.log('Inserindo estudos bíblicos...');
     const bibleStudies = [
       {
         title: "As Parábolas de Jesus",
         content: "Um estudo profundo sobre as parábolas de Jesus...",
-        author_id: usersData[1].id,
+        author_id: user.id,
         created_at: new Date().toISOString(),
       },
     ];
@@ -70,6 +51,7 @@ async function seed() {
     if (eventsError) throw eventsError;
     console.log('Eventos inseridos com sucesso');
 
+    console.log('Seed concluído com sucesso!');
   } catch (error) {
     console.error('Erro durante o seed:', error);
     throw error;
@@ -77,5 +59,4 @@ async function seed() {
 }
 
 seed()
-  .then(() => console.log('Seed concluído com sucesso!'))
   .catch(console.error);
