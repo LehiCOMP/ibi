@@ -484,25 +484,42 @@ export class MemStorage implements IStorage {
   }
 }
 
-import { db } from "./db";
-import { eq } from "drizzle-orm";
-import { users, bibleStudies, blogPosts, forumTopics, forumReplies, events } from "@shared/schema";
+import { supabase } from "./db";
+import type { Database } from "@/types/supabase";
 import type { NewUser, User } from "@shared/schema";
 
 export const storage = {
-  async getUser(id: number) {
-    const result = await db.select().from(users).where(eq(users.id, id));
-    return result[0];
+  async getUser(id: string) {
+    const { data, error } = await supabase
+      .from('users')
+      .select()
+      .eq('id', id)
+      .single();
+      
+    if (error) throw error;
+    return data;
   },
 
   async getUserByUsername(username: string) {
-    const result = await db.select().from(users).where(eq(users.username, username));
-    return result[0];
+    const { data, error } = await supabase
+      .from('users')
+      .select()
+      .eq('username', username)
+      .single();
+      
+    if (error) throw error;
+    return data;
   },
 
   async createUser(user: NewUser) {
-    const result = await db.insert(users).values(user).returning();
-    return result[0];
+    const { data, error } = await supabase
+      .from('users')
+      .insert(user)
+      .select()
+      .single();
+      
+    if (error) throw error;
+    return data;
   },
 
   async getBibleStudies() {
