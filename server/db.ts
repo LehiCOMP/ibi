@@ -13,8 +13,16 @@ export const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
-const client = postgres(process.env.SUPABASE_URL);
-export const db = drizzle(client);
+import * as schema from "@shared/schema";
+
+try {
+  const pool = postgres(process.env.SUPABASE_URL);
+  export const db = drizzle(pool, { schema });
+  console.log("Conexão com banco de dados estabelecida com sucesso");
+} catch (error) {
+  console.error("Erro ao conectar com banco de dados:", error);
+  throw error;
+}
 
 export const pool = new Pool({
   connectionString: process.env.SUPABASE_URL
