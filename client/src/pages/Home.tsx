@@ -217,26 +217,79 @@ const Home = () => {
         </section>
 
         {/* Versículo Bíblico em Destaque */}
-        <section className="mb-12 py-10 md:py-16 rounded-lg bg-gradient-to-r from-primary to-primary-dark">
-          <div className="container mx-auto px-4 text-center">
-            <BibleVerse reference="Filipenses 4:13" className="text-white text-xl md:text-2xl mb-4 max-w-3xl mx-auto font-heading">
-              "Tudo posso naquele que me fortalece."
-            </BibleVerse>
+        <section className="mb-12 py-10 md:py-16 rounded-lg relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary-dark transform skew-y-2"></div>
+          <div 
+            className="absolute inset-0 bg-pattern opacity-10"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+            }}
+          ></div>
+          <div className="container mx-auto px-4 text-center relative z-10">
+            <div className="relative inline-block fade-in">
+              <div className="absolute -inset-1 bg-white opacity-20 blur rounded-lg"></div>
+              <BibleVerse reference="Filipenses 4:13" className="text-white text-xl md:text-2xl py-10 max-w-3xl mx-auto font-heading relative">
+                <span className="text-4xl absolute -top-4 left-0 opacity-30">"</span>
+                Tudo posso naquele que me fortalece.
+                <span className="text-4xl absolute -bottom-8 right-0 opacity-30">"</span>
+              </BibleVerse>
+            </div>
           </div>
         </section>
         
         {/* Call to Action */}
-        <section className="bg-secondary py-10 md:py-16 mb-12 rounded-lg">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-neutral-darkest mb-4">Faça parte da nossa comunidade</h2>
-            <p className="text-neutral-darkest mb-8 max-w-2xl mx-auto">Junte-se a nós em nossos cultos presenciais ou participe online. Estamos ansiosos para conhecê-lo e caminhar juntos na fé.</p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link href="/eventos" className="bg-white hover:bg-neutral-light text-primary px-6 py-3 rounded-md font-medium transition">
-                Horários de Culto
-              </Link>
-              <Link href="/" className="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-md font-medium transition">
-                Entre em Contato
-              </Link>
+        <section className="mb-12 rounded-lg bg-white shadow-xl overflow-hidden relative">
+          <div className="absolute top-0 left-0 w-full h-16 bg-secondary"></div>
+          <div className="container mx-auto px-4 py-12 md:py-16 text-center relative">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mb-4 slide-in-up">
+                Faça parte da nossa comunidade
+              </h2>
+              <p className="text-neutral-dark mb-8 max-w-2xl mx-auto">
+                Junte-se a nós em nossos cultos presenciais ou participe online. 
+                Estamos ansiosos para conhecê-lo e caminhar juntos na fé.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-blue-50 p-6 rounded-lg hover-scale">
+                  <h3 className="font-heading font-semibold text-lg mb-2 text-primary">Horários de Culto</h3>
+                  <ul className="space-y-2 text-sm text-left list-inside list-disc">
+                    <li><strong>Domingo 18:00</strong> - Celebração</li>
+                    <li><strong>Domingo 08:30</strong> - Escola Bíblica</li>
+                    <li><strong>Terça 19:30</strong> - Estudo da Palavra</li>
+                    <li><strong>Quarta 19:00</strong> - Oração</li>
+                    <li><strong>Quinta 19:30</strong> - Projeto Congregação</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-blue-50 p-6 rounded-lg hover-scale">
+                  <h3 className="font-heading font-semibold text-lg mb-2 text-primary">Localização e Contato</h3>
+                  <p className="text-sm text-left mb-2">
+                    <strong>Endereço:</strong> Parnaíba - PI Rua Anhanguera, N° 3330, Bairro Frei Higino
+                  </p>
+                  <p className="text-sm text-left mb-2">
+                    <strong>Email:</strong> batistaindependente.phb@gmail.com
+                  </p>
+                  <p className="text-sm text-left">
+                    <strong>Instagram:</strong> @igrejabatista.phb
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Link 
+                  href="/eventos" 
+                  className="bg-secondary hover:bg-yellow-500 text-neutral-darkest px-6 py-3 rounded-md font-medium transition shadow-md hover:shadow-lg transform hover:-translate-y-1"
+                >
+                  Ver Todos os Eventos
+                </Link>
+                <Link 
+                  href="/" 
+                  className="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-md font-medium transition shadow-md hover:shadow-lg transform hover:-translate-y-1"
+                >
+                  Entre em Contato
+                </Link>
+              </div>
             </div>
           </div>
         </section>
