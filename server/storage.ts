@@ -567,12 +567,25 @@ export const storage = {
   },
 
   async getBlogPosts() {
-    const { data, error } = await supabase
-      .from('blog_posts')
-      .select()
-      .order('created_at');
-    if (error) throw error;
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select(`
+          *,
+          author:author_id (
+            id,
+            display_name,
+            avatar_url
+          )
+        `)
+        .order('created_at', { ascending: false })
+        .eq('published', true);
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error fetching blog posts:', error);
+      throw error;
+    }
   },
 
   async getBlogPost(id: string) {
@@ -612,20 +625,25 @@ export const storage = {
   },
 
   async getForumTopic(id: string) {
-    const { data, error } = await supabase
-      .from('forum_topics')
-      .select(`
-        *,
-        author:author_id (
-          id,
-          display_name,
-          avatar_url
-        )
-      `)
-      .eq('id', id)
-      .single();
-    if (error) throw error;
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from('forum_topics')
+        .select(`
+          *,
+          author:author_id (
+            id,
+            display_name,
+            avatar_url
+          )
+        `)
+        .eq('id', id)
+        .single();
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error fetching forum topic:', error);
+      throw error;
+    }
   },
 
   async createForumTopic(topic: InsertForumTopic) {
