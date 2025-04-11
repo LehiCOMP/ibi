@@ -62,7 +62,7 @@ export const Header = () => {
               </p>
             </div>
           </Link>
-          
+
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-6">
             <Link 
@@ -114,7 +114,7 @@ export const Header = () => {
               Eventos
             </Link>
           </nav>
-          
+
           {/* Auth Buttons - Desktop */}
           <div className="hidden md:flex items-center gap-3">
             {user ? (
@@ -124,7 +124,7 @@ export const Header = () => {
                     <Avatar className="h-9 w-9">
                       <AvatarImage src={user.avatar || ""} alt={user.displayName} />
                       <AvatarFallback className="bg-primary text-white">
-                        {user.displayName.substring(0, 2).toUpperCase()}
+                        {user?.displayName ? user.displayName.substring(0, 2).toUpperCase() : 'US'}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -168,7 +168,7 @@ export const Header = () => {
                 <Avatar className="h-9 w-9">
                   <AvatarImage src={user.avatar || ""} alt={user.displayName} />
                   <AvatarFallback className="bg-primary text-white">
-                    {user.displayName.substring(0, 2).toUpperCase()}
+                    {user?.displayName ? user.displayName.substring(0, 2).toUpperCase() : 'US'}
                   </AvatarFallback>
                 </Avatar>
               </Button>
@@ -184,7 +184,7 @@ export const Header = () => {
                 </Link>
               </Button>
             )}
-            
+
             <button 
               onClick={toggleMobileMenu}
               className="text-primary focus:outline-none transition-all duration-300"
@@ -198,7 +198,7 @@ export const Header = () => {
             </button>
           </div>
         </div>
-        
+
         {/* Mobile Navigation */}
         <div 
           className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
@@ -250,7 +250,7 @@ export const Header = () => {
             >
               Eventos
             </Link>
-            
+
             {!user && (
               <Link 
                 href="/auth" 
