@@ -41,8 +41,9 @@ export function setupAuth(app: Express) {
         user: {
           id: data.user.id,
           email: data.user.email,
-          username: data.user.user_metadata?.username,
-          displayName: data.user.user_metadata?.displayName
+          username: data.user.user_metadata?.username || '',
+          displayName: data.user.user_metadata?.displayName || data.user.user_metadata?.username || '',
+          avatar: data.user.user_metadata?.avatar || ''
         }
       });
     } catch (err) {

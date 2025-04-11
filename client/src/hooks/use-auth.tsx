@@ -72,8 +72,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!data.user) {
         throw new Error("Resposta inválida do servidor");
       }
-      
-      return data.user;
+
+      // Tenta fazer login automaticamente após o registro
+      const loginRes = await apiRequest("POST", "/api/login", {
+        email: credentials.email,
+        password: credentials.password
+      });
+
+      if (!loginRes.ok) {
+        throw new Error("Erro ao fazer login automático após registro");
+      }
+
+      const loginData = await loginRes.json();
+      return loginData.user;
     },
     onSuccess: (user: User) => {
       queryClient.setQueryData(["/api/user"], user);
