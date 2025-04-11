@@ -525,8 +525,16 @@ export const storage = {
   async getBibleStudies() {
     const { data, error } = await supabase
       .from('bible_studies')
-      .select()
-      .order('created_at');
+      .select(`
+        *,
+        author:author_id (
+          id,
+          display_name,
+          avatar_url
+        )
+      `)
+      .order('created_at', { ascending: false })
+      .eq('published', true);
     if (error) throw error;
     return data;
   },
@@ -627,8 +635,16 @@ export const storage = {
   async getEvents() {
     const { data, error } = await supabase
       .from('events')
-      .select()
-      .order('created_at');
+      .select(`
+        *,
+        author:author_id (
+          id,
+          display_name,
+          avatar_url
+        )
+      `)
+      .gte('end_time', new Date().toISOString())
+      .order('start_time', { ascending: true });
     if (error) throw error;
     return data;
   },
