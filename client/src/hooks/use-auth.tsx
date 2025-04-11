@@ -50,13 +50,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const registerMutation = useMutation({
     mutationFn: async (credentials: InsertUser) => {
-      console.log("Enviando dados de registro:", credentials);
-      const res = await apiRequest("POST", "/api/register", credentials);
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Erro ao cadastrar usuário");
-      }
-      return await res.json();
+      const { data, error } = await supabase.auth.signUp({
+        email: credentials.email,
+        password: credentials.password,
+        options: {
+          data: {
+            username: credentials.username,
+            display_name: credentials.displayName || credentials.username
+          }
+        }
+      });
+      
+      if (error) throw error;
+      return data.user;
     },
     onSuccess: (user: User) => {
       queryClient.setQueryData(["/api/user"], user);

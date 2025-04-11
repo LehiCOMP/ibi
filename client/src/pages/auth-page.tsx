@@ -74,9 +74,21 @@ export default function AuthPage() {
     loginMutation.mutate(data);
   };
 
-  const onRegisterSubmit = (data: RegisterFormValues) => {
-    const { confirmPassword, ...registerData } = data;
-    registerMutation.mutate(registerData);
+  const onRegisterSubmit = async (data: RegisterFormValues) => {
+    try {
+      const { confirmPassword, ...registerData } = data;
+      await registerMutation.mutateAsync(registerData);
+      toast({
+        title: "Conta criada com sucesso!",
+        description: "Por favor, verifique seu email para confirmar sua conta.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao criar conta",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
