@@ -58,14 +58,17 @@ function Router() {
     <PageTransition>
       <Switch>
         <Route path="/" component={Home} />
-        <Route path="/estudos" component={BibleStudies} />
-        <Route path="/estudos/:id" component={StudyDetail} />
         <Route path="/blog" component={Blog} />
         <Route path="/blog/:id" component={BlogDetail} />
-        <Route path="/forum" component={Forum} />
-        <Route path="/forum/:id" component={ForumTopic} />
-        <Route path="/eventos" component={Events} />
         <Route path="/auth" component={AuthPage} />
+        
+        {/* Rotas protegidas que requerem autenticação */}
+        <ProtectedRoute path="/estudos" component={BibleStudies} />
+        <ProtectedRoute path="/estudos/:id" component={StudyDetail} />
+        <ProtectedRoute path="/forum" component={Forum} />
+        <ProtectedRoute path="/forum/:id" component={ForumTopic} />
+        <ProtectedRoute path="/eventos" component={Events} />
+        
         <Route component={NotFound} />
       </Switch>
     </PageTransition>

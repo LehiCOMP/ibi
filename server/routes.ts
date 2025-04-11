@@ -311,9 +311,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validated = validateRequest(insertEventSchema, req.body);
       
-      // Adicionar o ID do usuário autenticado como autor (se aplicável)
+      // Adicionar o ID do usuário autenticado como autor
       const eventData = {
-        ...validated
+        ...validated,
+        authorId: req.user!.id
       };
       
       const event = await storage.createEvent(eventData);
