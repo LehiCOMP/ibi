@@ -64,7 +64,18 @@ const BibleStudies = () => {
 
   const onSubmit = async (values: any) => {
     try {
-      await mutation.mutateAsync(values);
+      await mutation.mutateAsync({
+        ...values,
+        authorId: "1", // Valor temporário para teste
+        published: true
+      });
+      
+      setDialogOpen(false);
+      toast({
+        title: "Sucesso!",
+        description: "Estudo bíblico publicado com sucesso.",
+      });
+      
     } catch (error) {
       console.error('Erro ao criar estudo:', error);
       toast({
