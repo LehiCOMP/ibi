@@ -24,8 +24,8 @@ export function setupAuth(app: Express) {
             username,
             displayName
           },
-          emailRedirectTo: undefined,
-          emailConfirm: false
+          emailRedirectTo: `${process.env.VITE_APP_URL}/auth`,
+          emailConfirm: true
         }
       });
 
