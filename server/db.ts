@@ -14,12 +14,18 @@ if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_KEY) {
 }
 
 export const supabase = createClient(
-  process.env.VITE_SUPABASE_URL,
-  process.env.VITE_SUPABASE_KEY,
+  process.env.VITE_SUPABASE_URL!,
+  process.env.VITE_SUPABASE_KEY!,
   {
     auth: {
       autoRefreshToken: true,
-      persistSession: true
+      persistSession: true,
+      detectSessionInUrl: true
+    },
+    realtime: {
+      params: {
+        eventsPerSecond: 10
+      }
     }
   }
 );
