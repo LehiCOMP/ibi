@@ -93,6 +93,7 @@ export function setupAuth(app: Express) {
   app.post("/api/register", async (req, res) => {
     try {
       console.log("Dados recebidos para registro:", req.body);
+      console.log("Iniciando validação dos dados...");
 
       const { username, password, email, displayName } = req.body;
 

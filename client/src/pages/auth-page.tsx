@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -74,6 +75,8 @@ export default function AuthPage() {
     loginMutation.mutate(data);
   };
 
+  const { toast } = useToast();
+  
   const onRegisterSubmit = async (data: RegisterFormValues) => {
     try {
       const { confirmPassword, ...registerData } = data;
