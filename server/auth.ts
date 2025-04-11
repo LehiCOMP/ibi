@@ -4,11 +4,25 @@ import { Express } from "express";
 import bcrypt from "bcryptjs";
 import { storage } from "./storage";
 import { insertUserSchema } from "@shared/schema";
+import session from "express-session";
 
 export function setupAuth(app: Express) {
-  passport.initialize();
+  // Configurar sessão antes do passport
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000 // 24 horas
+    }
+  }));
 
-  // Configurar serialização do usuário
+  // Inicializar passport e sessão
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // Configurar serialização do usuário (apenas uma vez)
   passport.serializeUser((user: any, done) => {
     done(null, user.id);
   });
@@ -22,9 +36,7 @@ export function setupAuth(app: Express) {
     }
   });
 
-  app.use(passport.initialize());
-  app.use(passport.session());
-
+  // Configurar estratégia local
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
@@ -45,19 +57,6 @@ export function setupAuth(app: Express) {
     })
   );
 
-  passport.serializeUser((user: any, done) => {
-    done(null, user.id);
-  });
-
-  passport.deserializeUser(async (id: number, done) => {
-    try {
-      const user = await storage.getUser(id);
-      done(null, user);
-    } catch (error) {
-      done(error);
-    }
-  });
-
   // Rota de registro
   app.post("/api/register", async (req, res) => {
     try {
@@ -76,40 +75,22 @@ export function setupAuth(app: Express) {
 
       const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-      try {
-        console.log("Tentando criar usuário com dados:", {
-          ...userData,
-          password: "[REDACTED]"
-        });
+      const newUser = await storage.createUser({
+        ...userData,
+        password: hashedPassword
+      });
 
-        const newUser = await storage.createUser({
-          ...userData,
-          password: hashedPassword
-        });
-
-        if (!newUser) {
-          console.error("Usuário não foi criado");
-          return res.status(500).json({ message: "Erro ao criar usuário" });
+      // Login automático após registro
+      req.login(newUser, (err) => {
+        if (err) {
+          console.error("Erro no login após registro:", err);
+          return res.status(500).json({ message: "Erro ao fazer login após registro" });
         }
-
-        console.log("Usuário criado com sucesso:", newUser.id);
-
-        // Login automático após registro
-        req.login(newUser, (err) => {
-          if (err) {
-            console.error("Erro detalhado no login após registro:", err);
-            return res.status(500).json({ message: "Erro ao fazer login após registro", details: err.message });
-          }
-          return res.status(201).json(newUser);
-        });
-      } catch (error: any) {
-        console.error("Erro detalhado no registro:", error);
-        res.status(400).json({ message: error.message || "Erro desconhecido no registro",
-        });
-      }
+        return res.status(201).json(newUser);
+      });
     } catch (error: any) {
-      console.error("Erro detalhado no registro:", error);
-      res.status(400).json({ message: error.message || "Erro ao criar usuário. Tente novamente." });
+      console.error("Erro no registro:", error);
+      res.status(400).json({ message: error.message || "Erro ao criar usuário" });
     }
   });
 
@@ -117,17 +98,15 @@ export function setupAuth(app: Express) {
   app.post("/api/login", (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
       if (err) {
-        console.error("Erro no login:", err);
         return res.status(500).json({ message: "Erro interno no servidor" });
       }
-      
+
       if (!user) {
         return res.status(401).json({ message: info.message || "Credenciais inválidas" });
       }
-      
+
       req.login(user, (loginErr) => {
         if (loginErr) {
-          console.error("Erro no login após autenticação:", loginErr);
           return res.status(500).json({ message: "Erro ao iniciar sessão" });
         }
         return res.json(user);
