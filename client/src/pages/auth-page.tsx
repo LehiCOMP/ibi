@@ -77,7 +77,7 @@ export default function AuthPage() {
   const onRegisterSubmit = async (data: RegisterFormValues) => {
     try {
       const { confirmPassword, ...registerData } = data;
-      console.log("Iniciando registro...");
+      console.log("Iniciando registro com dados:", registerData);
       
       if (registerData.password.length < 6) {
         toast({
@@ -88,19 +88,13 @@ export default function AuthPage() {
         return;
       }
 
-      const result = await registerMutation.mutateAsync(registerData);
-      console.log("Registro bem-sucedido:", result);
-      toast({
-        title: "Conta criada com sucesso!",
-        description: "Bem-vindo à nossa comunidade.",
-      });
-      setTimeout(() => navigate("/"), 1500);
+      await registerMutation.mutateAsync(registerData);
+      navigate("/");
     } catch (error: any) {
       console.error("Erro no registro:", error);
-      const errorMessage = error?.message || "Erro ao tentar criar a conta";
       toast({
         title: "Erro ao criar conta",
-        description: errorMessage,
+        description: error?.message || "Erro ao tentar criar a conta",
         variant: "destructive",
       });
     }
