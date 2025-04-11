@@ -60,12 +60,20 @@ export function setupAuth(app: Express) {
     new LocalStrategy(async (username, password, done) => {
       try {
         const user = await storage.getUserByUsername(username);
-        if (!user || !(await comparePasswords(password, user.password))) {
+        if (!user) {
+          console.log('Usuário não encontrado:', username);
           return done(null, false);
-        } else {
-          return done(null, user);
         }
+        
+        const isValid = await comparePasswords(password, user.password);
+        if (!isValid) {
+          console.log('Senha inválida para usuário:', username);
+          return done(null, false);
+        }
+        
+        return done(null, user);
       } catch (err) {
+        console.error('Erro na autenticação:', err);
         return done(err);
       }
     }),
