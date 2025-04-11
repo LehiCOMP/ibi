@@ -25,16 +25,16 @@ import AuthPage from "./pages/auth-page";
 // Componente de transição para páginas
 const PageTransition = ({ children }: { children: React.ReactNode }) => {
   const [isVisible, setIsVisible] = useState(false);
-  
+
   useEffect(() => {
     // Pequeno atraso para garantir que a animação ocorra após o render inicial
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 50);
-    
+
     return () => clearTimeout(timer);
   }, []);
-  
+
   return (
     <div 
       className={`transition-all duration-500 ease-in-out ${
@@ -48,12 +48,12 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => {
 
 function Router() {
   const [location] = useLocation();
-  
+
   // Efeito de scroll para o topo da página quando a rota muda
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
-  
+
   return (
     <PageTransition>
       <Switch>
@@ -61,14 +61,14 @@ function Router() {
         <Route path="/blog" component={Blog} />
         <Route path="/blog/:id" component={BlogDetail} />
         <Route path="/auth" component={AuthPage} />
-        
+
         {/* Rotas protegidas que requerem autenticação */}
         <ProtectedRoute path="/estudos" component={BibleStudies} />
         <ProtectedRoute path="/estudos/:id" component={StudyDetail} />
         <ProtectedRoute path="/forum" component={Forum} />
         <ProtectedRoute path="/forum/:id" component={ForumTopic} />
         <ProtectedRoute path="/eventos" component={Events} />
-        
+
         <Route component={NotFound} />
       </Switch>
     </PageTransition>
