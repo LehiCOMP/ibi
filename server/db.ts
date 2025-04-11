@@ -23,10 +23,9 @@ let db: ReturnType<typeof drizzle>;
 
 try {
   const pool = postgres(process.env.VITE_SUPABASE_URL, {
-    max: 10,
+    max: 1,
     idle_timeout: 20,
-    connect_timeout: 10,
-    prepare: false,
+    connect_timeout: 30,
     connection: {
       application_name: 'igreja-app'
     }
