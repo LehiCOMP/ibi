@@ -44,11 +44,13 @@ export const storage = {
 
   async createUser(userData: InsertUser) {
     try {
+      console.log('Tentando criar usuário:', { ...userData, password: '[REDACTED]' });
       const result = await db.insert(users).values(userData).returning();
+      console.log('Usuário criado com sucesso:', result[0].id);
       return result[0];
     } catch (error) {
-      console.error('Erro ao criar usuário:', error);
-      throw error;
+      console.error('Erro detalhado ao criar usuário:', error);
+      throw new Error(`Falha ao criar usuário: ${error.message}`);
     }
   },
 

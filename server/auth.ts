@@ -76,19 +76,30 @@ export function setupAuth(app: Express) {
 
       const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-      const newUser = await storage.createUser({
-        ...userData,
-        password: hashedPassword
-      });
+      try {
+        const newUser = await storage.createUser({
+          ...userData,
+          password: hashedPassword
+        });
 
-      // Login automático após registro
-      req.login(newUser, (err) => {
-        if (err) {
-          console.error("Erro no login após registro:", err);
-          return res.status(500).json({ message: "Erro ao fazer login após registro" });
+        if (!newUser) {
+          throw new Error("Falha ao criar usuário no banco de dados");
         }
-        return res.status(201).json(newUser);
-      });
+
+        // Login automático após registro
+        req.login(newUser, (err) => {
+          if (err) {
+            console.error("Erro no login após registro:", err);
+            return res.status(500).json({ message: "Erro ao fazer login após registro" });
+          }
+          return res.status(201).json(newUser);
+        });
+      } catch (dbError: any) {
+        console.error("Erro no banco de dados:", dbError);
+        return res.status(500).json({ 
+          message: "Erro interno ao criar usuário. Por favor, tente novamente."
+        });
+      }
     } catch (error: any) {
       console.error("Erro no registro:", error);
       res.status(400).json({ 
