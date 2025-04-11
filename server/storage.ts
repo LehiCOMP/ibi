@@ -585,13 +585,23 @@ export const storage = {
   },
 
   async getForumTopic(id: number) {
-    const result = await db.select().from(forumTopics).where(eq(forumTopics.id, id));
-    return result[0];
+    const { data, error } = await supabase
+      .from('forum_topics')
+      .select()
+      .eq('id', id)
+      .single();
+    if (error) throw error;
+    return data;
   },
 
-  async createForumTopic(topic: typeof forumTopics.$inferInsert) {
-    const result = await db.insert(forumTopics).values(topic).returning();
-    return result[0];
+  async createForumTopic(topic: InsertForumTopic) {
+    const { data, error } = await supabase
+      .from('forum_topics')
+      .insert(topic)
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
   },
 
   async getForumReplies(topicId: string) {
@@ -604,9 +614,14 @@ export const storage = {
     return data;
   },
 
-  async createForumReply(reply: typeof forumReplies.$inferInsert) {
-    const result = await db.insert(forumReplies).values(reply).returning();
-    return result[0];
+  async createForumReply(reply: InsertForumReply) {
+    const { data, error } = await supabase
+      .from('forum_replies')
+      .insert(reply)
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
   },
 
   async getEvents() {
@@ -639,16 +654,12 @@ export const storage = {
   },
 
   async incrementBlogPostViews(id: number) {
-    await db
-      .update(blogPosts)
-      .set({ views: blogPosts.views + 1 })
-      .where(eq(blogPosts.id, id));
+    const { error } = await supabase.rpc('increment_blog_post_views', { post_id: id });
+    if (error) throw error;
   },
 
   async incrementForumTopicViews(id: number) {
-    await db
-      .update(forumTopics)
-      .set({ views: forumTopics.views + 1 })
-      .where(eq(forumTopics.id, id));
+    const { error } = await supabase.rpc('increment_forum_topic_views', { topic_id: id });
+    if (error) throw error;
   }
 };
