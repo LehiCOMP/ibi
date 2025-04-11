@@ -25,7 +25,7 @@ import * as schema from "@shared/schema";
 let db: ReturnType<typeof drizzle>;
 
 try {
-  const pool = postgres(process.env.SUPABASE_URL);
+  const pool = postgres(process.env.DATABASE_URL || process.env.SUPABASE_URL);
   db = drizzle(pool, { schema });
   console.log("Conexão com banco de dados estabelecida com sucesso");
 } catch (error) {
@@ -36,5 +36,5 @@ try {
 export { db };
 
 export const pool = new Pool({
-  connectionString: process.env.SUPABASE_URL
+  connectionString: process.env.DATABASE_URL || process.env.SUPABASE_URL
 });
