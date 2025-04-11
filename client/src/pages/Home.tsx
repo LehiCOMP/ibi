@@ -76,9 +76,10 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Highlight Card - Bible Studies */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 card-hover slide-in-up" style={{ animationDelay: '0.1s' }}>
-              <div className="h-40 bg-gradient-to-r from-primary to-primary-dark flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 opacity-20 bg-pattern"></div>
-                <Book className="h-16 w-16 text-white relative z-10 transform transition-transform duration-500 hover:scale-110" />
+              <div className="h-40 bg-cover bg-center relative overflow-hidden" style={{backgroundImage: 'url("https://images.unsplash.com/photo-1504052434569-70ad5dc57b25?q=80&w=2070&auto=format&fit=crop")'}}>
+                <div className="absolute inset-0 bg-primary/50 flex items-center justify-center">
+                  <Book className="h-16 w-16 text-white relative z-10 transform transition-transform duration-500 hover:scale-110" />
+                </div>
               </div>
               <div className="p-6">
                 <h3 className="font-heading text-xl font-semibold mb-2 text-primary">Estudos Bíblicos</h3>
@@ -92,9 +93,10 @@ const Home = () => {
 
             {/* Highlight Card - Forum */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 card-hover slide-in-up" style={{ animationDelay: '0.3s' }}>
-              <div className="h-40 bg-gradient-to-r from-accent to-blue-500 flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 opacity-20 bg-pattern"></div>
-                <MessageSquare className="h-16 w-16 text-white relative z-10 transform transition-transform duration-500 hover:scale-110" />
+              <div className="h-40 bg-cover bg-center relative overflow-hidden" style={{backgroundImage: 'url("https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=2069&auto=format&fit=crop")'}}>
+                <div className="absolute inset-0 bg-accent/50 flex items-center justify-center">
+                  <MessageSquare className="h-16 w-16 text-white relative z-10 transform transition-transform duration-500 hover:scale-110" />
+                </div>
               </div>
               <div className="p-6">
                 <h3 className="font-heading text-xl font-semibold mb-2 text-primary">Fórum de Discussão</h3>
@@ -108,9 +110,10 @@ const Home = () => {
 
             {/* Highlight Card - Events */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 card-hover slide-in-up" style={{ animationDelay: '0.5s' }}>
-              <div className="h-40 bg-gradient-to-r from-secondary to-amber-400 flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 opacity-20 bg-pattern"></div>
-                <Calendar className="h-16 w-16 text-white relative z-10 transform transition-transform duration-500 hover:scale-110" />
+              <div className="h-40 bg-cover bg-center relative overflow-hidden" style={{backgroundImage: 'url("https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2069&auto=format&fit=crop")'}}>
+                <div className="absolute inset-0 bg-secondary/50 flex items-center justify-center">
+                  <Calendar className="h-16 w-16 text-white relative z-10 transform transition-transform duration-500 hover:scale-110" />
+                </div>
               </div>
               <div className="p-6">
                 <h3 className="font-heading text-xl font-semibold mb-2 text-primary">Eventos</h3>
