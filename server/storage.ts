@@ -6,6 +6,8 @@ import {
   forumReplies, type ForumReply, type InsertForumReply,
   events, type Event, type InsertEvent
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -482,4 +484,144 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async getBibleStudies(): Promise<BibleStudy[]> {
+    return db.select().from(bibleStudies).orderBy(desc(bibleStudies.createdAt));
+  }
+
+  async getBibleStudy(id: number): Promise<BibleStudy | undefined> {
+    const [study] = await db.select().from(bibleStudies).where(eq(bibleStudies.id, id));
+    return study || undefined;
+  }
+
+  async createBibleStudy(study: InsertBibleStudy): Promise<BibleStudy> {
+    const [newStudy] = await db
+      .insert(bibleStudies)
+      .values(study)
+      .returning();
+    return newStudy;
+  }
+
+  async getBlogPosts(): Promise<BlogPost[]> {
+    return db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt));
+  }
+
+  async getFeaturedBlogPost(): Promise<BlogPost | undefined> {
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.featured, true));
+    return post || undefined;
+  }
+
+  async getBlogPost(id: number): Promise<BlogPost | undefined> {
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
+    return post || undefined;
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const [newPost] = await db
+      .insert(blogPosts)
+      .values({ ...post, views: 0 })
+      .returning();
+    return newPost;
+  }
+
+  async incrementBlogPostViews(id: number): Promise<void> {
+    await db
+      .update(blogPosts)
+      .set({ views: db.raw('views + 1') })
+      .where(eq(blogPosts.id, id));
+  }
+
+  async getForumTopics(): Promise<ForumTopic[]> {
+    return db.select().from(forumTopics).orderBy(desc(forumTopics.createdAt));
+  }
+
+  async getForumTopic(id: number): Promise<ForumTopic | undefined> {
+    const [topic] = await db.select().from(forumTopics).where(eq(forumTopics.id, id));
+    return topic || undefined;
+  }
+
+  async createForumTopic(topic: InsertForumTopic): Promise<ForumTopic> {
+    const [newTopic] = await db
+      .insert(forumTopics)
+      .values({ ...topic, views: 0, replyCount: 0 })
+      .returning();
+    return newTopic;
+  }
+
+  async incrementForumTopicViews(id: number): Promise<void> {
+    await db
+      .update(forumTopics)
+      .set({ views: db.raw('views + 1') })
+      .where(eq(forumTopics.id, id));
+  }
+
+  async getForumReplies(topicId: number): Promise<ForumReply[]> {
+    return db
+      .select()
+      .from(forumReplies)
+      .where(eq(forumReplies.topicId, topicId))
+      .orderBy(forumReplies.createdAt);
+  }
+
+  async createForumReply(reply: InsertForumReply): Promise<ForumReply> {
+    // Start a transaction to update both the reply and the topic's reply count
+    const [newReply] = await db.transaction(async (tx) => {
+      // Create the reply
+      const [newReply] = await tx
+        .insert(forumReplies)
+        .values(reply)
+        .returning();
+      
+      // Increment the topic's reply count
+      await tx
+        .update(forumTopics)
+        .set({ replyCount: db.raw('reply_count + 1') })
+        .where(eq(forumTopics.id, reply.topicId));
+      
+      return [newReply];
+    });
+    
+    return newReply;
+  }
+
+  async getEvents(): Promise<Event[]> {
+    return db
+      .select()
+      .from(events)
+      .orderBy(events.startTime);
+  }
+
+  async getEvent(id: number): Promise<Event | undefined> {
+    const [event] = await db.select().from(events).where(eq(events.id, id));
+    return event || undefined;
+  }
+
+  async createEvent(event: InsertEvent): Promise<Event> {
+    const [newEvent] = await db
+      .insert(events)
+      .values(event)
+      .returning();
+    return newEvent;
+  }
+}
+
+// Use the database storage instead of memory storage
+export const storage = new DatabaseStorage();
