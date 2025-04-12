@@ -46,21 +46,24 @@ const BibleStudies = () => {
 
   const mutation = useMutation({
     mutationFn: async (values) => {
-      const response = await fetch('/api/bible-studies', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-        credentials: 'include'
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Erro ao criar estudo');
-      }
-      
+      const response = await apiRequest('POST', '/api/bible-studies', values);
       return response.json();
+    },
+    onError: (error: Error) => {
+      console.error('Erro na mutação:', error);
+      toast({
+        title: "Erro ao criar estudo",
+        description: error.message || "Ocorreu um erro ao tentar criar o estudo. Tente novamente.",
+        variant: "destructive",
+      });
+    },
+    onSuccess: () => {
+      setDialogOpen(false);
+      form.reset();
+      toast({
+        title: "Sucesso!",
+        description: "Estudo bíblico publicado com sucesso.",
+      });
     }
   });
 
