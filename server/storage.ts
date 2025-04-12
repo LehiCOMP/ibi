@@ -85,6 +85,18 @@ export const storage = {
     }
   },
 
+  async createBibleStudy(studyData: InsertBibleStudy) {
+    try {
+      console.log('Criando estudo bíblico:', studyData);
+      const result = await db.insert(bibleStudies).values(studyData).returning();
+      console.log('Estudo criado:', result[0]);
+      return result[0];
+    } catch (error) {
+      console.error('Erro ao criar estudo bíblico:', error);
+      throw error;
+    }
+  },
+
   async getBlogPosts() {
     try {
       return await db.select().from(blogPosts).orderBy(blogPosts.createdAt);
