@@ -1,4 +1,3 @@
-
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
@@ -19,12 +18,12 @@ if (missingVars.length > 0) {
 }
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY?.replace(/"/g, ''),
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN?.replace(/"/g, ''),
+  projectId: "ibiparnaiba-71381",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET?.replace(/"/g, ''),
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID?.replace(/"/g, ''),
+  appId: import.meta.env.VITE_FIREBASE_APP_ID?.replace(/"/g, '')
 };
 
 console.log('Firebase Config:', {
