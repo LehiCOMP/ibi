@@ -68,32 +68,12 @@ const BibleStudies = () => {
   });
 
   const onSubmit = async (values: any) => {
-    try {
-      const formData = {
-        ...values,
-        published: true
-      };
-      
-      console.log('Enviando dados:', formData);
-      
-      await mutation.mutateAsync(formData);
-      await refetch(); // Atualiza a lista após criar
-      
-      setDialogOpen(false);
-      form.reset();
-      
-      toast({
-        title: "Sucesso!",
-        description: "Estudo bíblico publicado com sucesso.",
-      });
-    } catch (error) {
-      console.error('Erro ao criar estudo:', error);
-      toast({
-        title: "Erro ao criar estudo",
-        description: "Ocorreu um erro ao tentar criar o estudo. Tente novamente.",
-        variant: "destructive",
-      });
-    }
+    const formData = {
+      ...values,
+      published: true
+    };
+    console.log('Enviando dados:', formData);
+    await mutation.mutateAsync(formData);
   };
 
   return (
