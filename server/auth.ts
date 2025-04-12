@@ -1,56 +1,51 @@
+
 import { Express } from "express";
-import { supabase } from "./db";
+import { db } from "./db";
+import * as bcrypt from "bcryptjs";
+
+export async function hashPassword(password: string): Promise<string> {
+  return bcrypt.hash(password, 10);
+}
 
 export function setupAuth(app: Express) {
-  // Rota para verificar usuário atual
   app.get("/api/user", async (req, res) => {
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error || !user) {
+    const userId = req.headers['user-id'];
+    if (!userId) {
       return res.status(401).json({ message: "Não autenticado" });
     }
-    res.json(user);
+    
+    try {
+      const userDoc = await db.collection('users').doc(userId as string).get();
+      if (!userDoc.exists) {
+        return res.status(401).json({ message: "Usuário não encontrado" });
+      }
+      res.json(userDoc.data());
+    } catch (error) {
+      res.status(500).json({ message: "Erro ao buscar usuário" });
+    }
   });
 
-  // Rota de registro
   app.post("/api/register", async (req, res) => {
     const { email, password, username, displayName } = req.body;
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const hashedPassword = await hashPassword(password);
+      
+      const userRef = db.collection('users').doc();
+      await userRef.set({
         email,
-        password,
-        options: {
-          data: {
-            username,
-            displayName
-          },
-          emailRedirectTo: `${process.env.VITE_APP_URL}/auth`,
-          emailConfirm: true
-        }
+        username,
+        displayName,
+        password: hashedPassword,
+        createdAt: new Date()
       });
 
-      if (error) {
-        console.error("Erro no registro Supabase:", error);
-        if (error.message.includes("Email not confirmed")) {
-          return res.status(400).json({ 
-            message: "Por favor, verifique seu email para confirmar o cadastro. Um link de confirmação foi enviado para seu email." 
-          });
-        }
-        return res.status(400).json({ message: error.message });
-      }
-
-      if (!data.user) {
-        return res.status(400).json({ message: "Erro ao criar usuário" });
-      }
-
-      // Retorna um objeto estruturado com os dados do usuário
       res.status(201).json({
         user: {
-          id: data.user.id,
-          email: data.user.email,
-          username: data.user.user_metadata?.username || '',
-          displayName: data.user.user_metadata?.displayName || data.user.user_metadata?.username || '',
-          avatar: data.user.user_metadata?.avatar || ''
+          id: userRef.id,
+          email,
+          username,
+          displayName
         }
       });
     } catch (err) {
@@ -59,34 +54,39 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // Rota de login
   app.post("/api/login", async (req, res) => {
     const { email, password } = req.body;
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-      options: {
-        emailRedirectTo: undefined,
-        data: {
-          email_confirm: false
-        }
+    try {
+      const usersRef = db.collection('users');
+      const snapshot = await usersRef.where('email', '==', email).get();
+      
+      if (snapshot.empty) {
+        return res.status(401).json({ message: "Credenciais inválidas" });
       }
-    });
 
-    if (error) {
-      return res.status(401).json({ message: error.message });
+      const userDoc = snapshot.docs[0];
+      const userData = userDoc.data();
+      
+      const validPassword = await bcrypt.compare(password, userData.password);
+      if (!validPassword) {
+        return res.status(401).json({ message: "Credenciais inválidas" });
+      }
+
+      res.json({
+        user: {
+          id: userDoc.id,
+          email: userData.email,
+          username: userData.username,
+          displayName: userData.displayName
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Erro no login" });
     }
-
-    res.json(data);
   });
 
-  // Rota de logout
-  app.post("/api/logout", async (req, res) => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      return res.status(500).json({ message: error.message });
-    }
+  app.post("/api/logout", (req, res) => {
     res.status(200).json({ message: "Logout realizado com sucesso" });
   });
 }
