@@ -33,9 +33,7 @@ export const supabase = createClient(
 let db: ReturnType<typeof drizzle>;
 
 try {
-  const connectionString = process.env.VITE_SUPABASE_URL?.replace('https://', 'postgresql://postgres.llpppsxncmtzfheddgni.supabase.co:5432/postgres') || '';
-  
-  const pool = postgres(connectionString, {
+  const pool = postgres(process.env.DATABASE_URL || '', {
     max: 3,
     idle_timeout: 0,
     connect_timeout: 30,
@@ -43,7 +41,6 @@ try {
     connection: {
       application_name: 'igreja-app',
       keepalive: true,
-      keepaliveInitialDelayMillis: 10000,
       keepaliveInitialDelayMillis: 1000,
       statement_timeout: 120000,
       query_timeout: 120000
