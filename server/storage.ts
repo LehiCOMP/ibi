@@ -14,7 +14,7 @@ import {
   type InsertForumReply,
   type InsertEvent
 } from '@shared/schema';
-import { collection, query, where, getDocs, addDoc, doc, getDoc, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, doc, getDoc, orderBy } from '@google-cloud/firestore';
 
 export const storage = {
   async getUserByUsername(username: string) {
