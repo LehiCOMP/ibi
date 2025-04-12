@@ -1,5 +1,5 @@
 
-import { initializeApp, cert } from 'firebase-admin/app';
+import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 
 const requiredVars = {
@@ -16,24 +16,18 @@ if (missingVars.length > 0) {
   throw new Error(`Variáveis do Firebase faltando: ${missingVars.join(', ')}`);
 }
 
-console.log('Firebase Admin Config:', {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  privateKeyLength: process.env.FIREBASE_PRIVATE_KEY?.length
-});
+// Verifica se já existe uma instância do app
+if (!getApps().length) {
+  initializeApp({
+    credential: cert({
+      projectId: process.env.FIREBASE_PROJECT_ID?.trim(),
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL?.trim(),
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+    })
+  });
+}
 
-const app = initializeApp({
-  credential: cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-  })
-});
-
-// Log para debug
-console.log('Firebase Admin inicializado com projeto:', process.env.FIREBASE_PROJECT_ID?.replace(/["']/g, '').trim());
-
-const db = getFirestore(app);
+const db = getFirestore();
 
 export { db };
 
