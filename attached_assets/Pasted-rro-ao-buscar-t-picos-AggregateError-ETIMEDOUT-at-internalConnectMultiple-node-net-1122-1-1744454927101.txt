@@ -1,0 +1,112 @@
+rro ao buscar tópicos: AggregateError [ETIMEDOUT]: 
+    at internalConnectMultiple (node:net:1122:18)
+    at afterConnectMultiple (node:net:1689:7) {
+  code: 'ETIMEDOUT',
+  [errors]: [
+    Error: connect ETIMEDOUT 172.64.149.246:5432
+        at createConnectionError (node:net:1652:14)
+        at Timeout.internalConnectMultipleTimeout (node:net:1711:38)
+        at listOnTimeout (node:internal/timers:583:11)
+        at process.processTimers (node:internal/timers:519:7) {
+      errno: -110,
+      code: 'ETIMEDOUT',
+      syscall: 'connect',
+      address: '172.64.149.246',
+      port: 5432
+    },
+    Error: connect ETIMEDOUT 104.18.38.10:5432
+        at createConnectionError (node:net:1652:14)
+        at afterConnectMultiple (node:net:1682:16) {
+      errno: -110,
+      code: 'ETIMEDOUT',
+      syscall: 'connect',
+      address: '104.18.38.10',
+      port: 5432
+    }
+  ]
+}
+Erro ao buscar estudos bíblicos: AggregateError [ETIMEDOUT]: 
+    at internalConnectMultiple (node:net:1122:18)
+    at afterConnectMultiple (node:net:1689:7) {
+  code: 'ETIMEDOUT',
+  [errors]: [
+    Error: connect ETIMEDOUT 104.18.38.10:5432
+        at createConnectionError (node:net:1652:14)
+        at Timeout.internalConnectMultipleTimeout (node:net:1711:38)
+        at listOnTimeout (node:internal/timers:583:11)
+        at process.processTimers (node:internal/timers:519:7) {
+      errno: -110,
+      code: 'ETIMEDOUT',
+      syscall: 'connect',
+      address: '104.18.38.10',
+      port: 5432
+    },
+    Error: connect ETIMEDOUT 172.64.149.246:5432
+        at createConnectionError (node:net:1652:14)
+        at afterConnectMultiple (node:net:1682:16) {
+      errno: -110,
+      code: 'ETIMEDOUT',
+      syscall: 'connect',
+      address: '172.64.149.246',
+      port: 5432
+    }
+  ]
+}
+10:33:16 AM [express] GET /api/forum-topics 500 in 132330ms :: {"message":"Error fetching forum topic…
+10:33:16 AM [express] GET /api/bible-studies 500 in 132337ms :: {"message":"Error fetching Bible stud…
+Erro ao buscar posts: AggregateError [ETIMEDOUT]: 
+    at internalConnectMultiple (node:net:1122:18)
+    at afterConnectMultiple (node:net:1689:7) {
+  code: 'ETIMEDOUT',
+  [errors]: [
+    Error: connect ETIMEDOUT 104.18.38.10:5432
+        at createConnectionError (node:net:1652:14)
+        at Timeout.internalConnectMultipleTimeout (node:net:1711:38)
+        at listOnTimeout (node:internal/timers:583:11)
+        at process.processTimers (node:internal/timers:519:7) {
+      errno: -110,
+      code: 'ETIMEDOUT',
+      syscall: 'connect',
+      address: '104.18.38.10',
+      port: 5432
+    },
+    Error: connect ETIMEDOUT 172.64.149.246:5432
+        at createConnectionError (node:net:1652:14)
+        at afterConnectMultiple (node:net:1682:16) {
+      errno: -110,
+      code: 'ETIMEDOUT',
+      syscall: 'connect',
+      address: '172.64.149.246',
+      port: 5432
+    }
+  ]
+}
+10:35:28 AM [express] GET /api/blog-posts 500 in 263398ms :: {"message":"Error fetching blog posts"}
+Erro ao buscar eventos: AggregateError [ETIMEDOUT]: 
+    at internalConnectMultiple (node:net:1122:18)
+    at afterConnectMultiple (node:net:1689:7) {
+  code: 'ETIMEDOUT',
+  [errors]: [
+    Error: connect ETIMEDOUT 104.18.38.10:5432
+        at createConnectionError (node:net:1652:14)
+        at Timeout.internalConnectMultipleTimeout (node:net:1711:38)
+        at listOnTimeout (node:internal/timers:583:11)
+        at process.processTimers (node:internal/timers:519:7) {
+      errno: -110,
+      code: 'ETIMEDOUT',
+      syscall: 'connect',
+      address: '104.18.38.10',
+      port: 5432
+    },
+    Error: connect ETIMEDOUT 172.64.149.246:5432
+        at createConnectionError (node:net:1652:14)
+        at afterConnectMultiple (node:net:1682:16) {
+      errno: -110,
+      code: 'ETIMEDOUT',
+      syscall: 'connect',
+      address: '172.64.149.246',
+      port: 5432
+    }
+  ]
+}
+10:35:32 AM [express] GET /api/events 500 in 267475ms :: {"message":"Error fetching events"}
