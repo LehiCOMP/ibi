@@ -1,12 +1,6 @@
-import { db, pool } from './db';
-import { and, eq } from 'drizzle-orm';
-import {
-  users,
-  bibleStudies,
-  blogPosts,
-  forumTopics,
-  forumReplies,
-  events,
+
+import { db } from './db';
+import { 
   type User,
   type BibleStudy,
   type BlogPost,
@@ -23,24 +17,21 @@ import {
 
 export const storage = {
   async getUserByUsername(username: string, retries = 3) {
-    for (let i = 0; i < retries; i++) {
-      try {
-        const result = await db.select().from(users).where(eq(users.username, username));
-        return result[0];
-      } catch (error: any) {
-        console.error(`Tentativa ${i + 1}/${retries} falhou:`, error);
-        if (i === retries - 1 || error.code !== 'CONNECT_TIMEOUT') {
-          throw error;
-        }
-        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-      }
+    try {
+      const usersRef = db.collection('users');
+      const snapshot = await usersRef.where('username', '==', username).get();
+      return snapshot.empty ? null : snapshot.docs[0].data() as User;
+    } catch (error) {
+      console.error('Erro ao buscar usuário:', error);
+      throw error;
     }
   },
 
   async getUserByEmail(email: string) {
     try {
-      const result = await db.select().from(users).where(eq(users.email, email));
-      return result[0];
+      const usersRef = db.collection('users');
+      const snapshot = await usersRef.where('email', '==', email).get();
+      return snapshot.empty ? null : snapshot.docs[0].data() as User;
     } catch (error) {
       console.error('Erro ao buscar usuário por email:', error);
       throw error;
@@ -49,27 +40,20 @@ export const storage = {
 
   async createUser(userData: InsertUser) {
     try {
-      console.log("Storage: Iniciando criação do usuário");
-      const result = await db.insert(users).values(userData).returning();
-      console.log("Storage: Usuário criado com sucesso");
-      return result[0];
-    } catch (error: any) {
-      console.error("Storage: Erro ao criar usuário:", {
-        code: error.code,
-        message: error.message,
-        detail: error.detail
-      });
-      if (error.code === '23505') {
-        throw new Error("Usuário ou email já está em uso");
-      }
+      const usersRef = db.collection('users');
+      const docRef = await usersRef.add(userData);
+      const doc = await docRef.get();
+      return { id: doc.id, ...doc.data() } as User;
+    } catch (error) {
+      console.error('Erro ao criar usuário:', error);
       throw error;
     }
   },
 
-  async getUser(id: number) {
+  async getUser(id: string) {
     try {
-      const result = await db.select().from(users).where(eq(users.id, id));
-      return result[0];
+      const doc = await db.collection('users').doc(id).get();
+      return doc.exists ? { id: doc.id, ...doc.data() } as User : null;
     } catch (error) {
       console.error('Erro ao buscar usuário:', error);
       throw error;
@@ -78,7 +62,8 @@ export const storage = {
 
   async getBibleStudies() {
     try {
-      return await db.select().from(bibleStudies).orderBy(bibleStudies.createdAt);
+      const snapshot = await db.collection('bible_studies').orderBy('createdAt', 'desc').get();
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as BibleStudy[];
     } catch (error) {
       console.error('Erro ao buscar estudos bíblicos:', error);
       throw error;
@@ -87,7 +72,8 @@ export const storage = {
 
   async getBlogPosts() {
     try {
-      return await db.select().from(blogPosts).orderBy(blogPosts.createdAt);
+      const snapshot = await db.collection('blog_posts').orderBy('createdAt', 'desc').get();
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as BlogPost[];
     } catch (error) {
       console.error('Erro ao buscar posts:', error);
       throw error;
@@ -96,7 +82,8 @@ export const storage = {
 
   async getForumTopics() {
     try {
-      return await db.select().from(forumTopics).orderBy(forumTopics.createdAt);
+      const snapshot = await db.collection('forum_topics').orderBy('createdAt', 'desc').get();
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as ForumTopic[];
     } catch (error) {
       console.error('Erro ao buscar tópicos:', error);
       throw error;
@@ -105,20 +92,21 @@ export const storage = {
 
   async getEvents() {
     try {
-      return await db.select().from(events).orderBy(events.startTime);
+      const snapshot = await db.collection('events').orderBy('startTime', 'asc').get();
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Event[];
     } catch (error) {
       console.error('Erro ao buscar eventos:', error);
       throw error;
     }
   },
+
   async createBibleStudy(data: InsertBibleStudy) {
     try {
-      console.log('Tentando criar estudo bíblico:', data);
-      const result = await db.insert(bibleStudies).values(data).returning();
-      console.log('Estudo criado com sucesso:', result);
-      return result;
+      const docRef = await db.collection('bible_studies').add(data);
+      const doc = await docRef.get();
+      return { id: doc.id, ...doc.data() } as BibleStudy;
     } catch (error) {
-      console.error('Erro ao criar estudo no banco:', error);
+      console.error('Erro ao criar estudo:', error);
       throw error;
     }
   }
