@@ -15,7 +15,8 @@ try {
     })
   });
 
-  export const db = getFirestore(app);
+  const db = getFirestore(app);
+  export { db };
 } catch (error) {
   console.error('Erro ao inicializar Firebase:', error);
   throw error;
