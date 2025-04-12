@@ -33,7 +33,7 @@ export const supabase = createClient(
 let db: ReturnType<typeof drizzle>;
 
 try {
-  const connectionString = process.env.POSTGRES_URL;
+  const connectionString = process.env.VITE_SUPABASE_URL?.replace('https://', 'postgresql://postgres:postgres@') || '';
   
   const pool = postgres(connectionString, {
     max: 5,
