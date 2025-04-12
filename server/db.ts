@@ -36,13 +36,14 @@ try {
   const connectionString = process.env.VITE_SUPABASE_URL;
   
   const pool = postgres(connectionString, {
-    max: 2,
-    idle_timeout: 0,
-    connect_timeout: 0,
-    max_lifetime: 0,
+    max: 5,
+    idle_timeout: 30,
+    connect_timeout: 10,
+    max_lifetime: 60 * 30,
     connection: {
       application_name: 'igreja-app',
       keepalive: true,
+      keepaliveInitialDelayMillis: 10000,
       keepaliveInitialDelayMillis: 1000,
       statement_timeout: 120000,
       query_timeout: 120000
