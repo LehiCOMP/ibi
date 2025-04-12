@@ -33,13 +33,13 @@ export const supabase = createClient(
 let db: ReturnType<typeof drizzle>;
 
 try {
-  const connectionString = process.env.VITE_SUPABASE_URL?.replace('https://', 'postgresql://postgres:postgres@') || '';
+  const connectionString = process.env.VITE_SUPABASE_URL?.replace('https://', 'postgresql://postgres.llpppsxncmtzfheddgni.supabase.co:5432/postgres') || '';
   
   const pool = postgres(connectionString, {
-    max: 5,
-    idle_timeout: 30,
-    connect_timeout: 10,
-    max_lifetime: 60 * 30,
+    max: 3,
+    idle_timeout: 0,
+    connect_timeout: 30,
+    max_lifetime: 60 * 60,
     connection: {
       application_name: 'igreja-app',
       keepalive: true,
