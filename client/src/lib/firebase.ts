@@ -14,7 +14,8 @@ const firebaseConfig = {
 };
 
 console.log('Firebase Config:', {
-  apiKeyExists: !!firebaseConfig.apiKey,
+  apiKey: firebaseConfig.apiKey ? 'Configurada' : 'Não configurada',
+  apiKeyLength: firebaseConfig.apiKey?.length,
   authDomain: firebaseConfig.authDomain,
   projectId: firebaseConfig.projectId
 });
