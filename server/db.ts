@@ -24,11 +24,14 @@ console.log('Firebase Admin Config:', {
 
 const app = initializeApp({
   credential: cert({
-    projectId: process.env.FIREBASE_PROJECT_ID?.replace(/"/g, ''),
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL?.replace(/"/g, ''),
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n').replace(/"/g, '')
+    projectId: process.env.FIREBASE_PROJECT_ID?.replace(/["']/g, '').trim(),
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL?.replace(/["']/g, '').trim(),
+    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n').replace(/["']/g, '').trim()
   })
 });
+
+// Log para debug
+console.log('Firebase Admin inicializado com projeto:', process.env.FIREBASE_PROJECT_ID?.replace(/["']/g, '').trim());
 
 const db = getFirestore(app);
 
