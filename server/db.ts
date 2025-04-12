@@ -1,13 +1,12 @@
 
-import { initializeApp, cert } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import { createClient } from '@supabase/supabase-js';
+import type { Database } from '../shared/schema';
 
-const app = initializeApp({
-  credential: cert({
-    projectId: "ibiparnaiba-71381",
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-  })
-});
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
+  throw new Error('SUPABASE_URL e SUPABASE_KEY são necessárias');
+}
 
-export const db = getFirestore(app);
+export const supabase = createClient<Database>(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+);
