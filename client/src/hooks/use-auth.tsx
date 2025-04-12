@@ -1,13 +1,16 @@
+
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  User as FirebaseUser
+  User as FirebaseUser,
+  updateProfile
 } from "firebase/auth";
-import { auth } from "../lib/firebase";
+import { auth, storage } from "../lib/firebase";
 import { useToast } from "./use-toast";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 type AuthContextType = {
   user: FirebaseUser | null;
@@ -15,7 +18,8 @@ type AuthContextType = {
   error: Error | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string, username: string, displayName: string) => Promise<void>;
+  updateUserProfile: (displayName: string, photoURL?: File) => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -54,9 +58,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const register = async (email: string, password: string) => {
+  const register = async (email: string, password: string, username: string, displayName: string) => {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(result.user, {
+        displayName: displayName || username
+      });
       setUser(result.user);
       toast({
         title: "Conta criada com sucesso!",
@@ -66,6 +73,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const error = err as Error;
       toast({
         title: "Falha no cadastro",
+        description: error.message,
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
+  const updateUserProfile = async (displayName: string, photoFile?: File) => {
+    if (!user) return;
+
+    try {
+      let photoURL = user.photoURL;
+
+      if (photoFile) {
+        const storageRef = ref(storage, `avatars/${user.uid}`);
+        const snapshot = await uploadBytes(storageRef, photoFile);
+        photoURL = await getDownloadURL(snapshot.ref);
+      }
+
+      await updateProfile(user, {
+        displayName,
+        photoURL
+      });
+
+      toast({
+        title: "Perfil atualizado",
+        description: "Suas informações foram atualizadas com sucesso.",
+      });
+    } catch (err) {
+      const error = err as Error;
+      toast({
+        title: "Erro ao atualizar perfil",
         description: error.message,
         variant: "destructive",
       });
@@ -101,6 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         register,
+        updateUserProfile,
       }}
     >
       {children}
