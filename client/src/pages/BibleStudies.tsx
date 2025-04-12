@@ -22,6 +22,12 @@ const BibleStudies = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { data: studies, isLoading, refetch } = useQuery({
     queryKey: ['/api/bible-studies'],
+    queryFn: () => apiRequest('GET', '/api/bible-studies')
+      .then(res => res.json())
+      .catch(error => {
+        console.error('Erro ao buscar estudos:', error);
+        throw error;
+      })
   });
 
   const form = useForm({

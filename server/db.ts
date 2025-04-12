@@ -38,8 +38,8 @@ try {
   const pool = postgres(connectionString, {
     max: 2,
     idle_timeout: 60,
-    connect_timeout: 60,
-    max_lifetime: 60 * 60,
+    connect_timeout: 120,
+    max_lifetime: 120 * 60,
     connection: {
       application_name: 'igreja-app',
       keepalive: true,

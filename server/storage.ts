@@ -110,5 +110,16 @@ export const storage = {
       console.error('Erro ao buscar eventos:', error);
       throw error;
     }
+  },
+  async createBibleStudy(data: InsertBibleStudy) {
+    try {
+      console.log('Tentando criar estudo bíblico:', data);
+      const result = await db.insert(bibleStudies).values(data).returning();
+      console.log('Estudo criado com sucesso:', result);
+      return result;
+    } catch (error) {
+      console.error('Erro ao criar estudo no banco:', error);
+      throw error;
+    }
   }
 };
